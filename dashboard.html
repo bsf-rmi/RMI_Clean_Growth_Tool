@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lightcast 2024 Economic Complexity Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --background-color: #f5f6fa;
+            --card-background: #ffffff;
+            --text-color: #2c3e50;
+            --border-color: #dcdde1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            background: white;
+            padding: 1rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-tab {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: var(--background-color);
+            color: var(--text-color);
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab:hover {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .nav-tab.active {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--secondary-color);
+            display: inline-block;
+        }
+
+        .card {
+            background: var(--card-background);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .metric-card.accent {
+            background: linear-gradient(135deg, var(--accent-color), #c0392b);
+        }
+
+        .metric-card.success {
+            background: linear-gradient(135deg, #27ae60, #219a52);
+        }
+
+        .metric-card.warning {
+            background: linear-gradient(135deg, #f39c12, #d68910);
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .chart-container {
+            min-height: 400px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-controls label {
+            font-weight: 500;
+        }
+
+        .filter-controls select,
+        .filter-controls input {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .filter-controls select:focus,
+        .filter-controls input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--secondary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 1rem;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .tooltip {
+            position: relative;
+            cursor: help;
+        }
+
+        .tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary-color);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip:hover::after {
+            opacity: 1;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-success { background: #d4edda; color: #155724; }
+        .badge-warning { background: #fff3cd; color: #856404; }
+        .badge-danger { background: #f8d7da; color: #721c24; }
+        .badge-info { background: #d1ecf1; color: #0c5460; }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.5rem; }
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .container { padding: 1rem; }
+            .nav-tab { padding: 0.5rem 1rem; font-size: 0.85rem; }
+        }
+
+        .insight-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .insight-box h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-box ul {
+            margin-left: 1.5rem;
+        }
+
+        .data-info {
+            background: #e8f4f8;
+            border-left: 4px solid var(--secondary-color);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Lightcast 2024 Economic Complexity Dashboard</h1>
+        <p>Interactive visualization of NAICS 6-digit industry complexity analysis across U.S. geographies</p>
+    </div>
+
+    <nav class="nav-tabs">
+        <button class="nav-tab active" data-tab="overview">Overview</button>
+        <button class="nav-tab" data-tab="diagnostics">Model Diagnostics</button>
+        <button class="nav-tab" data-tab="geography">Geographic Analysis</button>
+        <button class="nav-tab" data-tab="industry">Industry Analysis</button>
+        <button class="nav-tab" data-tab="explorer">Data Explorer</button>
+    </nav>
+
+    <div class="container">
+        <!-- Overview Tab -->
+        <div id="overview" class="tab-content active">
+            <div class="insight-box">
+                <h3>About This Dashboard</h3>
+                <p>This dashboard visualizes economic complexity metrics derived from the Lightcast 2024 dataset using the Daboin et al. methodology. It analyzes 947 industries (6-digit NAICS) across 5 geographic aggregation levels.</p>
+            </div>
+
+            <div class="grid-4" id="overview-metrics">
+                <div class="loading">Loading metrics...</div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Key Findings</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-title">Data Coverage by Geography Level</div>
+                        <div id="overview-coverage-chart" class="chart-container"></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Model Quality Indicators</div>
+                        <div id="overview-quality-chart" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Complexity Distribution Overview</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-title">Economic Complexity Index (ECI) by Level</div>
+                        <div id="overview-eci-chart" class="chart-container"></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Industry Complexity Distribution</div>
+                        <div id="overview-ici-chart" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Diagnostics Tab -->
+        <div id="diagnostics" class="tab-content">
+            <div class="data-info">
+                <strong>Model Diagnostics:</strong> These metrics evaluate the quality and consistency of the economic complexity model at each geographic aggregation level. Higher fill rates and appropriate correlation values indicate better model performance.
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Diagnostic Summary Table</h2>
+                <div class="card">
+                    <div class="table-container" id="diagnostics-table"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Data Coverage Analysis</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-title">Fill Rate by Geographic Level</div>
+                        <div id="diag-fillrate-chart" class="chart-container"></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Number of Geographies vs. Fill Rate</div>
+                        <div id="diag-geo-scatter" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Spectral Analysis</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-title">Eigenvalue Comparison</div>
+                        <div id="diag-eigenvalue-chart" class="chart-container"></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Eigenvalue Ratio (2nd/1st)</div>
+                        <div id="diag-eigen-ratio" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Correlation Metrics</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-title">Correlation Heatmap</div>
+                        <div id="diag-correlation-heatmap" class="chart-container"></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Correlation Patterns by Level</div>
+                        <div id="diag-correlation-lines" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Geography Tab -->
+        <div id="geography" class="tab-content">
+            <div class="data-info">
+                <strong>Geographic Analysis:</strong> Explore economic complexity metrics across different geographic levels - from counties (3,143) to states (51). Each region has an Economic Complexity Index (ECI) measuring economic sophistication and a Strategic Index indicating growth potential.
+            </div>
+
+            <div class="filter-controls">
+                <label for="geo-level-filter">Geographic Level:</label>
+                <select id="geo-level-filter">
+                    <option value="all">All Levels</option>
+                    <option value="1">County</option>
+                    <option value="2">State</option>
+                    <option value="3">CBSA (Metro Areas)</option>
+                    <option value="4">CSA (Combined Statistical Areas)</option>
+                    <option value="5">Commuting Zone</option>
+                </select>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Economic Complexity Distribution</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-title">ECI Distribution by Geographic Level</div>
+                        <div id="geo-eci-boxplot" class="chart-container"></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Industrial Diversity by Geographic Level</div>
+                        <div id="geo-diversity-boxplot" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Relationship Analysis</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-title">Diversity vs. Economic Complexity</div>
+                        <div id="geo-diversity-eci-scatter" class="chart-container"></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Strategic Index vs. Economic Complexity</div>
+                        <div id="geo-strategic-eci-scatter" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Top Regions by Economic Complexity</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-title">Top 20 Highest ECI Regions</div>
+                        <div id="geo-top-eci" class="chart-container"></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Top 20 Most Diverse Regions</div>
+                        <div id="geo-top-diversity" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Industry Tab -->
+        <div id="industry" class="tab-content">
+            <div class="data-info">
+                <strong>Industry Analysis:</strong> Examine 947 industries at the 6-digit NAICS level. Industry Complexity Index (ICI) measures sophistication, while ubiquity indicates how widespread an industry is across regions.
+            </div>
+
+            <div class="filter-controls">
+                <label for="ind-geo-filter">Geographic Level:</label>
+                <select id="ind-geo-filter">
+                    <option value="1">County</option>
+                    <option value="2" selected>State</option>
+                    <option value="3">CBSA</option>
+                    <option value="4">CSA</option>
+                    <option value="5">Commuting Zone</option>
+                </select>
+                <input type="text" id="ind-search" class="search-input" placeholder="Search industries...">
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Industry Complexity Overview</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-title">Industry Complexity Distribution</div>
+                        <div id="ind-complexity-hist" class="chart-container"></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Ubiquity vs. Industry Complexity</div>
+                        <div id="ind-ubiquity-scatter" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Industry Rankings</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-title">Top 20 Most Complex Industries</div>
+                        <div id="ind-top-complex" class="chart-container"></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Top 20 Least Complex Industries</div>
+                        <div id="ind-bottom-complex" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Employment & Complexity</h2>
+                <div class="card">
+                    <div class="card-title">Employment Share vs. Industry Complexity</div>
+                    <div id="ind-employment-scatter" class="chart-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Explorer Tab -->
+        <div id="explorer" class="tab-content">
+            <div class="data-info">
+                <strong>Data Explorer:</strong> Browse and search the complete dataset. Use filters to narrow down results and click on column headers to sort.
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Geographic Data</h2>
+                <div class="card">
+                    <div class="filter-controls">
+                        <label for="explorer-geo-level">Level:</label>
+                        <select id="explorer-geo-level">
+                            <option value="all">All</option>
+                            <option value="1">County</option>
+                            <option value="2">State</option>
+                            <option value="3">CBSA</option>
+                            <option value="4">CSA</option>
+                            <option value="5">Commuting Zone</option>
+                        </select>
+                        <input type="text" id="explorer-geo-search" class="search-input" placeholder="Search by name...">
+                    </div>
+                    <div class="table-container" id="explorer-geo-table" style="max-height: 500px; overflow-y: auto;"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Industry Data</h2>
+                <div class="card">
+                    <div class="filter-controls">
+                        <label for="explorer-ind-level">Level:</label>
+                        <select id="explorer-ind-level">
+                            <option value="1">County</option>
+                            <option value="2" selected>State</option>
+                            <option value="3">CBSA</option>
+                            <option value="4">CSA</option>
+                            <option value="5">Commuting Zone</option>
+                        </select>
+                        <input type="text" id="explorer-ind-search" class="search-input" placeholder="Search industries...">
+                    </div>
+                    <div class="table-container" id="explorer-ind-table" style="max-height: 500px; overflow-y: auto;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global data storage
+        let diagnosticsData = [];
+        let geographyData = [];
+        let industryData = [];
+        let industryNodes = [];
+
+        // Data paths
+        const DATA_PATH = 'lightcast_2024_complexity_naics6d_20260117_161352/';
+
+        // Color schemes
+        const geoColors = {
+            '1': '#e74c3c',  // County - red
+            '2': '#3498db',  // State - blue
+            '3': '#2ecc71',  // CBSA - green
+            '4': '#9b59b6',  // CSA - purple
+            '5': '#f39c12'   // CZ - orange
+        };
+
+        const geoNames = {
+            '1': 'County',
+            '2': 'State',
+            '3': 'CBSA',
+            '4': 'CSA',
+            '5': 'Commuting Zone'
+        };
+
+        // Tab navigation
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Load CSV data
+        async function loadCSV(filename) {
+            return new Promise((resolve, reject) => {
+                Papa.parse(DATA_PATH + filename, {
+                    download: true,
+                    header: true,
+                    dynamicTyping: true,
+                    complete: results => resolve(results.data.filter(row => Object.keys(row).length > 1)),
+                    error: err => reject(err)
+                });
+            });
+        }
+
+        // Initialize dashboard
+        async function initDashboard() {
+            try {
+                // Load all data
+                [diagnosticsData, geographyData, industryData, industryNodes] = await Promise.all([
+                    loadCSV('complexity_diagnostics.csv'),
+                    loadCSV('geography_specific_data.csv'),
+                    loadCSV('industry_specific_data.csv'),
+                    loadCSV('industry_space_nodes.csv')
+                ]);
+
+                // Render all visualizations
+                renderOverview();
+                renderDiagnostics();
+                renderGeography();
+                renderIndustry();
+                renderExplorer();
+
+                // Set up filters
+                setupFilters();
+
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.querySelector('.container').innerHTML = `
+                    <div class="card" style="text-align: center; padding: 3rem;">
+                        <h2>Error Loading Data</h2>
+                        <p>Please ensure the CSV files are in the correct location.</p>
+                        <p style="color: #e74c3c;">${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Render Overview
+        function renderOverview() {
+            // Key metrics
+            const totalGeos = geographyData.length;
+            const totalIndustries = new Set(industryData.map(d => d.industry_code)).size;
+            const avgFillRate = (diagnosticsData.reduce((a, b) => a + b.fill_rate_pct, 0) / diagnosticsData.length).toFixed(1);
+            const geoLevels = diagnosticsData.length;
+
+            document.getElementById('overview-metrics').innerHTML = `
+                <div class="metric-card">
+                    <div class="metric-value">${totalGeos.toLocaleString()}</div>
+                    <div class="metric-label">Total Geographies</div>
+                </div>
+                <div class="metric-card success">
+                    <div class="metric-value">${totalIndustries}</div>
+                    <div class="metric-label">Industries Analyzed</div>
+                </div>
+                <div class="metric-card warning">
+                    <div class="metric-value">${avgFillRate}%</div>
+                    <div class="metric-label">Avg. Data Fill Rate</div>
+                </div>
+                <div class="metric-card accent">
+                    <div class="metric-value">${geoLevels}</div>
+                    <div class="metric-label">Geographic Levels</div>
+                </div>
+            `;
+
+            // Coverage chart
+            Plotly.newPlot('overview-coverage-chart', [{
+                type: 'bar',
+                x: diagnosticsData.map(d => d.geo_aggregation_name),
+                y: diagnosticsData.map(d => d.n_geographies),
+                marker: { color: diagnosticsData.map(d => geoColors[d.geo_aggregation_level]) },
+                text: diagnosticsData.map(d => d.n_geographies),
+                textposition: 'outside'
+            }], {
+                title: '',
+                xaxis: { title: 'Geographic Level' },
+                yaxis: { title: 'Number of Geographies', type: 'log' },
+                margin: { t: 20, b: 80 }
+            }, { responsive: true });
+
+            // Quality indicators
+            Plotly.newPlot('overview-quality-chart', [{
+                type: 'bar',
+                name: 'Fill Rate (%)',
+                x: diagnosticsData.map(d => d.geo_aggregation_name),
+                y: diagnosticsData.map(d => d.fill_rate_pct),
+                marker: { color: '#3498db' }
+            }, {
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: '2nd Eigenvalue (x100)',
+                x: diagnosticsData.map(d => d.geo_aggregation_name),
+                y: diagnosticsData.map(d => d.second_eigenvalue * 100),
+                yaxis: 'y2',
+                marker: { color: '#e74c3c', size: 10 },
+                line: { width: 2 }
+            }], {
+                title: '',
+                xaxis: { title: 'Geographic Level' },
+                yaxis: { title: 'Fill Rate (%)', side: 'left' },
+                yaxis2: { title: '2nd Eigenvalue (x100)', side: 'right', overlaying: 'y' },
+                legend: { orientation: 'h', y: 1.1 },
+                margin: { t: 40, b: 80 }
+            }, { responsive: true });
+
+            // ECI by level
+            const eciTraces = Object.keys(geoNames).map(level => {
+                const levelData = geographyData.filter(d => d.geo_aggregation_level == level);
+                return {
+                    type: 'box',
+                    y: levelData.map(d => d.economic_complexity_index),
+                    name: geoNames[level],
+                    marker: { color: geoColors[level] }
+                };
+            });
+
+            Plotly.newPlot('overview-eci-chart', eciTraces, {
+                title: '',
+                yaxis: { title: 'Economic Complexity Index' },
+                showlegend: false,
+                margin: { t: 20 }
+            }, { responsive: true });
+
+            // ICI distribution
+            const stateIndustry = industryData.filter(d => d.geo_aggregation_level == 2);
+            Plotly.newPlot('overview-ici-chart', [{
+                type: 'histogram',
+                x: stateIndustry.map(d => d.industry_complexity),
+                nbinsx: 50,
+                marker: { color: '#9b59b6' }
+            }], {
+                title: '',
+                xaxis: { title: 'Industry Complexity Index' },
+                yaxis: { title: 'Count' },
+                margin: { t: 20 }
+            }, { responsive: true });
+        }
+
+        // Render Diagnostics
+        function renderDiagnostics() {
+            // Diagnostics table
+            const tableHtml = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Level</th>
+                            <th>Name</th>
+                            <th># Geographies</th>
+                            <th>Fill Rate</th>
+                            <th>2nd Eigenvalue</th>
+                            <th>ICI-Ubiquity Corr.</th>
+                            <th>ECI-Diversity Corr.</th>
+                            <th>ICI Flipped</th>
+                            <th>ECI Flipped</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${diagnosticsData.map(d => `
+                            <tr>
+                                <td>${d.geo_aggregation_level}</td>
+                                <td><strong>${d.geo_aggregation_name}</strong></td>
+                                <td>${d.n_geographies.toLocaleString()}</td>
+                                <td><span class="badge ${d.fill_rate_pct > 25 ? 'badge-success' : d.fill_rate_pct > 15 ? 'badge-warning' : 'badge-danger'}">${d.fill_rate_pct.toFixed(2)}%</span></td>
+                                <td>${d.second_eigenvalue.toFixed(4)}</td>
+                                <td>${d.ici_ubiquity_correlation.toFixed(4)}</td>
+                                <td>${d.eci_diversity_correlation.toFixed(4)}</td>
+                                <td><span class="badge ${d.ici_sign_flipped ? 'badge-warning' : 'badge-success'}">${d.ici_sign_flipped}</span></td>
+                                <td><span class="badge ${d.eci_sign_flipped ? 'badge-warning' : 'badge-success'}">${d.eci_sign_flipped}</span></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            document.getElementById('diagnostics-table').innerHTML = tableHtml;
+
+            // Fill rate chart
+            Plotly.newPlot('diag-fillrate-chart', [{
+                type: 'bar',
+                x: diagnosticsData.map(d => d.geo_aggregation_name),
+                y: diagnosticsData.map(d => d.fill_rate_pct),
+                marker: {
+                    color: diagnosticsData.map(d => d.fill_rate_pct),
+                    colorscale: 'RdYlGn'
+                },
+                text: diagnosticsData.map(d => d.fill_rate_pct.toFixed(1) + '%'),
+                textposition: 'outside'
+            }], {
+                title: '',
+                xaxis: { title: 'Geographic Level' },
+                yaxis: { title: 'Fill Rate (%)', range: [0, 40] },
+                margin: { t: 20, b: 80 }
+            }, { responsive: true });
+
+            // Geo vs Fill Rate scatter
+            Plotly.newPlot('diag-geo-scatter', [{
+                type: 'scatter',
+                mode: 'markers+text',
+                x: diagnosticsData.map(d => d.n_geographies),
+                y: diagnosticsData.map(d => d.fill_rate_pct),
+                text: diagnosticsData.map(d => d.geo_aggregation_name),
+                textposition: 'top center',
+                marker: {
+                    size: 20,
+                    color: diagnosticsData.map(d => geoColors[d.geo_aggregation_level])
+                }
+            }], {
+                title: '',
+                xaxis: { title: 'Number of Geographies', type: 'log' },
+                yaxis: { title: 'Fill Rate (%)' },
+                margin: { t: 20 }
+            }, { responsive: true });
+
+            // Eigenvalue chart
+            Plotly.newPlot('diag-eigenvalue-chart', [{
+                type: 'bar',
+                name: '1st Eigenvalue',
+                x: diagnosticsData.map(d => d.geo_aggregation_name),
+                y: diagnosticsData.map(d => d.first_eigenvalue),
+                marker: { color: '#3498db' }
+            }, {
+                type: 'bar',
+                name: '2nd Eigenvalue',
+                x: diagnosticsData.map(d => d.geo_aggregation_name),
+                y: diagnosticsData.map(d => d.second_eigenvalue),
+                marker: { color: '#e74c3c' }
+            }], {
+                title: '',
+                barmode: 'group',
+                xaxis: { title: 'Geographic Level' },
+                yaxis: { title: 'Eigenvalue' },
+                legend: { orientation: 'h', y: 1.1 },
+                margin: { t: 40, b: 80 }
+            }, { responsive: true });
+
+            // Eigenvalue ratio
+            Plotly.newPlot('diag-eigen-ratio', [{
+                type: 'scatter',
+                mode: 'lines+markers',
+                x: diagnosticsData.map(d => d.geo_aggregation_name),
+                y: diagnosticsData.map(d => d.second_eigenvalue / d.first_eigenvalue),
+                marker: { size: 15, color: '#9b59b6' },
+                line: { width: 3 }
+            }], {
+                title: '',
+                xaxis: { title: 'Geographic Level' },
+                yaxis: { title: 'Eigenvalue Ratio (2nd/1st)' },
+                margin: { t: 20, b: 80 }
+            }, { responsive: true });
+
+            // Correlation heatmap
+            const corrMetrics = ['ici_ubiquity_correlation', 'eci_diversity_correlation', 'eci_avgici_correlation'];
+            const corrLabels = ['ICI-Ubiquity', 'ECI-Diversity', 'ECI-AvgICI'];
+            const heatmapZ = corrMetrics.map(metric =>
+                diagnosticsData.map(d => d[metric])
+            );
+
+            Plotly.newPlot('diag-correlation-heatmap', [{
+                type: 'heatmap',
+                z: heatmapZ,
+                x: diagnosticsData.map(d => d.geo_aggregation_name),
+                y: corrLabels,
+                colorscale: 'RdBu',
+                zmid: 0,
+                text: heatmapZ.map(row => row.map(v => v.toFixed(3))),
+                texttemplate: '%{text}',
+                hovertemplate: '%{y}: %{x}<br>Correlation: %{z:.4f}<extra></extra>'
+            }], {
+                title: '',
+                margin: { t: 20, l: 120 }
+            }, { responsive: true });
+
+            // Correlation lines
+            Plotly.newPlot('diag-correlation-lines', corrMetrics.map((metric, i) => ({
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: corrLabels[i],
+                x: diagnosticsData.map(d => d.geo_aggregation_name),
+                y: diagnosticsData.map(d => d[metric]),
+                marker: { size: 10 }
+            })), {
+                title: '',
+                xaxis: { title: 'Geographic Level' },
+                yaxis: { title: 'Correlation Coefficient', range: [-1.1, 1.1] },
+                shapes: [{ type: 'line', x0: -0.5, x1: 4.5, y0: 0, y1: 0, line: { dash: 'dash', color: '#666' }}],
+                legend: { orientation: 'h', y: 1.15 },
+                margin: { t: 50, b: 80 }
+            }, { responsive: true });
+        }
+
+        // Render Geography
+        function renderGeography() {
+            updateGeographyCharts('all');
+        }
+
+        function updateGeographyCharts(level) {
+            let filteredData = level === 'all' ? geographyData : geographyData.filter(d => d.geo_aggregation_level == level);
+
+            // ECI boxplot
+            const eciTraces = level === 'all'
+                ? Object.keys(geoNames).map(l => ({
+                    type: 'box',
+                    y: geographyData.filter(d => d.geo_aggregation_level == l).map(d => d.economic_complexity_index),
+                    name: geoNames[l],
+                    marker: { color: geoColors[l] }
+                }))
+                : [{
+                    type: 'histogram',
+                    x: filteredData.map(d => d.economic_complexity_index),
+                    nbinsx: 50,
+                    marker: { color: geoColors[level] }
+                }];
+
+            Plotly.newPlot('geo-eci-boxplot', eciTraces, {
+                title: '',
+                yaxis: level === 'all' ? { title: 'ECI' } : { title: 'Count' },
+                xaxis: level !== 'all' ? { title: 'Economic Complexity Index' } : {},
+                showlegend: false,
+                margin: { t: 20 }
+            }, { responsive: true });
+
+            // Diversity boxplot
+            const divTraces = level === 'all'
+                ? Object.keys(geoNames).map(l => ({
+                    type: 'box',
+                    y: geographyData.filter(d => d.geo_aggregation_level == l).map(d => d.industrial_diversity),
+                    name: geoNames[l],
+                    marker: { color: geoColors[l] }
+                }))
+                : [{
+                    type: 'histogram',
+                    x: filteredData.map(d => d.industrial_diversity),
+                    nbinsx: 50,
+                    marker: { color: geoColors[level] }
+                }];
+
+            Plotly.newPlot('geo-diversity-boxplot', divTraces, {
+                title: '',
+                yaxis: level === 'all' ? { title: 'Industrial Diversity' } : { title: 'Count' },
+                xaxis: level !== 'all' ? { title: 'Industrial Diversity' } : {},
+                showlegend: false,
+                margin: { t: 20 }
+            }, { responsive: true });
+
+            // Diversity vs ECI scatter
+            const scatterData = level === 'all'
+                ? Object.keys(geoNames).map(l => {
+                    const levelData = geographyData.filter(d => d.geo_aggregation_level == l);
+                    return {
+                        type: 'scatter',
+                        mode: 'markers',
+                        name: geoNames[l],
+                        x: levelData.map(d => d.industrial_diversity),
+                        y: levelData.map(d => d.economic_complexity_index),
+                        text: levelData.map(d => d.name),
+                        marker: { color: geoColors[l], size: 6, opacity: 0.6 },
+                        hovertemplate: '%{text}<br>Diversity: %{x}<br>ECI: %{y:.3f}<extra></extra>'
+                    };
+                })
+                : [{
+                    type: 'scatter',
+                    mode: 'markers',
+                    x: filteredData.map(d => d.industrial_diversity),
+                    y: filteredData.map(d => d.economic_complexity_index),
+                    text: filteredData.map(d => d.name),
+                    marker: {
+                        color: filteredData.map(d => d.economic_complexity_percentile_score),
+                        colorscale: 'Viridis',
+                        size: 8,
+                        colorbar: { title: 'ECI Percentile' }
+                    },
+                    hovertemplate: '%{text}<br>Diversity: %{x}<br>ECI: %{y:.3f}<extra></extra>'
+                }];
+
+            Plotly.newPlot('geo-diversity-eci-scatter', scatterData, {
+                title: '',
+                xaxis: { title: 'Industrial Diversity' },
+                yaxis: { title: 'Economic Complexity Index' },
+                legend: { orientation: 'h', y: 1.1 },
+                margin: { t: 40 }
+            }, { responsive: true });
+
+            // Strategic vs ECI scatter
+            const strategicData = level === 'all'
+                ? Object.keys(geoNames).map(l => {
+                    const levelData = geographyData.filter(d => d.geo_aggregation_level == l);
+                    return {
+                        type: 'scatter',
+                        mode: 'markers',
+                        name: geoNames[l],
+                        x: levelData.map(d => d.economic_complexity_index),
+                        y: levelData.map(d => d.strategic_index),
+                        text: levelData.map(d => d.name),
+                        marker: { color: geoColors[l], size: 6, opacity: 0.6 },
+                        hovertemplate: '%{text}<br>ECI: %{x:.3f}<br>Strategic: %{y:.2f}<extra></extra>'
+                    };
+                })
+                : [{
+                    type: 'scatter',
+                    mode: 'markers',
+                    x: filteredData.map(d => d.economic_complexity_index),
+                    y: filteredData.map(d => d.strategic_index),
+                    text: filteredData.map(d => d.name),
+                    marker: {
+                        color: filteredData.map(d => d.strategic_index_percentile),
+                        colorscale: 'RdYlGn',
+                        size: 8,
+                        colorbar: { title: 'Strategic Pctl' }
+                    },
+                    hovertemplate: '%{text}<br>ECI: %{x:.3f}<br>Strategic: %{y:.2f}<extra></extra>'
+                }];
+
+            Plotly.newPlot('geo-strategic-eci-scatter', strategicData, {
+                title: '',
+                xaxis: { title: 'Economic Complexity Index' },
+                yaxis: { title: 'Strategic Index' },
+                legend: { orientation: 'h', y: 1.1 },
+                margin: { t: 40 }
+            }, { responsive: true });
+
+            // Top ECI regions
+            const topECI = [...filteredData].sort((a, b) => b.economic_complexity_index - a.economic_complexity_index).slice(0, 20);
+            Plotly.newPlot('geo-top-eci', [{
+                type: 'bar',
+                y: topECI.map(d => d.name),
+                x: topECI.map(d => d.economic_complexity_index),
+                orientation: 'h',
+                marker: {
+                    color: topECI.map(d => d.economic_complexity_index),
+                    colorscale: 'Viridis'
+                },
+                text: topECI.map(d => d.economic_complexity_index.toFixed(3)),
+                textposition: 'outside'
+            }], {
+                title: '',
+                xaxis: { title: 'ECI' },
+                yaxis: { automargin: true },
+                margin: { t: 20, l: 200 }
+            }, { responsive: true });
+
+            // Top diverse regions
+            const topDiv = [...filteredData].sort((a, b) => b.industrial_diversity - a.industrial_diversity).slice(0, 20);
+            Plotly.newPlot('geo-top-diversity', [{
+                type: 'bar',
+                y: topDiv.map(d => d.name),
+                x: topDiv.map(d => d.industrial_diversity),
+                orientation: 'h',
+                marker: {
+                    color: topDiv.map(d => d.industrial_diversity),
+                    colorscale: 'Blues'
+                },
+                text: topDiv.map(d => d.industrial_diversity),
+                textposition: 'outside'
+            }], {
+                title: '',
+                xaxis: { title: 'Industrial Diversity' },
+                yaxis: { automargin: true },
+                margin: { t: 20, l: 200 }
+            }, { responsive: true });
+        }
+
+        // Render Industry
+        function renderIndustry() {
+            updateIndustryCharts(2, '');
+        }
+
+        function updateIndustryCharts(level, search) {
+            let filteredData = industryData.filter(d => d.geo_aggregation_level == level);
+            if (search) {
+                const searchLower = search.toLowerCase();
+                filteredData = filteredData.filter(d =>
+                    d.industry_description.toLowerCase().includes(searchLower) ||
+                    String(d.industry_code).includes(searchLower)
+                );
+            }
+
+            // Complexity histogram
+            Plotly.newPlot('ind-complexity-hist', [{
+                type: 'histogram',
+                x: filteredData.map(d => d.industry_complexity),
+                nbinsx: 50,
+                marker: { color: '#9b59b6' }
+            }], {
+                title: '',
+                xaxis: { title: 'Industry Complexity Index' },
+                yaxis: { title: 'Count' },
+                margin: { t: 20 }
+            }, { responsive: true });
+
+            // Ubiquity vs complexity scatter
+            Plotly.newPlot('ind-ubiquity-scatter', [{
+                type: 'scatter',
+                mode: 'markers',
+                x: filteredData.map(d => d.industry_ubiquity),
+                y: filteredData.map(d => d.industry_complexity),
+                text: filteredData.map(d => d.industry_description),
+                marker: {
+                    color: filteredData.map(d => d.industry_complexity_percentile),
+                    colorscale: 'Viridis',
+                    size: 8,
+                    colorbar: { title: 'Complexity Pctl' }
+                },
+                hovertemplate: '%{text}<br>Ubiquity: %{x}<br>ICI: %{y:.3f}<extra></extra>'
+            }], {
+                title: '',
+                xaxis: { title: 'Industry Ubiquity (# of regions)' },
+                yaxis: { title: 'Industry Complexity Index' },
+                margin: { t: 20 }
+            }, { responsive: true });
+
+            // Top complex industries
+            const topComplex = [...filteredData].sort((a, b) => b.industry_complexity - a.industry_complexity).slice(0, 20);
+            Plotly.newPlot('ind-top-complex', [{
+                type: 'bar',
+                y: topComplex.map(d => d.industry_description.substring(0, 40)),
+                x: topComplex.map(d => d.industry_complexity),
+                orientation: 'h',
+                marker: { color: '#27ae60' },
+                text: topComplex.map(d => d.industry_complexity.toFixed(3)),
+                textposition: 'outside',
+                hovertemplate: '%{y}<br>ICI: %{x:.3f}<extra></extra>'
+            }], {
+                title: '',
+                xaxis: { title: 'Industry Complexity Index' },
+                yaxis: { automargin: true },
+                margin: { t: 20, l: 250 }
+            }, { responsive: true });
+
+            // Bottom complex industries
+            const bottomComplex = [...filteredData].sort((a, b) => a.industry_complexity - b.industry_complexity).slice(0, 20);
+            Plotly.newPlot('ind-bottom-complex', [{
+                type: 'bar',
+                y: bottomComplex.map(d => d.industry_description.substring(0, 40)),
+                x: bottomComplex.map(d => d.industry_complexity),
+                orientation: 'h',
+                marker: { color: '#e74c3c' },
+                text: bottomComplex.map(d => d.industry_complexity.toFixed(3)),
+                textposition: 'outside',
+                hovertemplate: '%{y}<br>ICI: %{x:.3f}<extra></extra>'
+            }], {
+                title: '',
+                xaxis: { title: 'Industry Complexity Index' },
+                yaxis: { automargin: true },
+                margin: { t: 20, l: 250 }
+            }, { responsive: true });
+
+            // Employment vs complexity
+            Plotly.newPlot('ind-employment-scatter', [{
+                type: 'scatter',
+                mode: 'markers',
+                x: filteredData.map(d => d.industry_employment_share_nation * 100),
+                y: filteredData.map(d => d.industry_complexity),
+                text: filteredData.map(d => d.industry_description),
+                marker: {
+                    color: filteredData.map(d => d.industry_ubiquity),
+                    colorscale: 'Plasma',
+                    size: 10,
+                    colorbar: { title: 'Ubiquity' }
+                },
+                hovertemplate: '%{text}<br>Employment Share: %{x:.4f}%<br>ICI: %{y:.3f}<extra></extra>'
+            }], {
+                title: '',
+                xaxis: { title: 'National Employment Share (%)', type: 'log' },
+                yaxis: { title: 'Industry Complexity Index' },
+                margin: { t: 20 }
+            }, { responsive: true });
+        }
+
+        // Render Explorer
+        function renderExplorer() {
+            updateExplorerGeoTable('all', '');
+            updateExplorerIndTable(2, '');
+        }
+
+        function updateExplorerGeoTable(level, search) {
+            let data = level === 'all' ? geographyData : geographyData.filter(d => d.geo_aggregation_level == level);
+            if (search) {
+                const searchLower = search.toLowerCase();
+                data = data.filter(d => d.name.toLowerCase().includes(searchLower));
+            }
+            data = data.slice(0, 500); // Limit for performance
+
+            const tableHtml = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Level</th>
+                            <th>GEOID</th>
+                            <th>Name</th>
+                            <th>Diversity</th>
+                            <th>ECI</th>
+                            <th>ECI Pctl</th>
+                            <th>Strategic</th>
+                            <th>Strategic Pctl</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.map(d => `
+                            <tr>
+                                <td><span class="badge badge-info">${geoNames[d.geo_aggregation_level]}</span></td>
+                                <td>${d.geoid}</td>
+                                <td><strong>${d.name}</strong></td>
+                                <td>${d.industrial_diversity}</td>
+                                <td>${d.economic_complexity_index.toFixed(4)}</td>
+                                <td>${d.economic_complexity_percentile_score.toFixed(1)}</td>
+                                <td>${d.strategic_index.toFixed(4)}</td>
+                                <td>${d.strategic_index_percentile.toFixed(1)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                <p style="margin-top: 1rem; color: #666;">Showing ${data.length} of ${geographyData.length} records</p>
+            `;
+            document.getElementById('explorer-geo-table').innerHTML = tableHtml;
+        }
+
+        function updateExplorerIndTable(level, search) {
+            let data = industryData.filter(d => d.geo_aggregation_level == level);
+            if (search) {
+                const searchLower = search.toLowerCase();
+                data = data.filter(d =>
+                    d.industry_description.toLowerCase().includes(searchLower) ||
+                    String(d.industry_code).includes(searchLower)
+                );
+            }
+            data = data.slice(0, 500); // Limit for performance
+
+            const tableHtml = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>NAICS Code</th>
+                            <th>Industry Description</th>
+                            <th>Ubiquity</th>
+                            <th>Employment Share</th>
+                            <th>ICI</th>
+                            <th>ICI Pctl</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.map(d => `
+                            <tr>
+                                <td><strong>${d.industry_code}</strong></td>
+                                <td>${d.industry_description}</td>
+                                <td>${d.industry_ubiquity}</td>
+                                <td>${(d.industry_employment_share_nation * 100).toFixed(4)}%</td>
+                                <td>${d.industry_complexity.toFixed(4)}</td>
+                                <td>${d.industry_complexity_percentile.toFixed(1)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                <p style="margin-top: 1rem; color: #666;">Showing ${data.length} records</p>
+            `;
+            document.getElementById('explorer-ind-table').innerHTML = tableHtml;
+        }
+
+        // Set up filters
+        function setupFilters() {
+            // Geography level filter
+            document.getElementById('geo-level-filter').addEventListener('change', (e) => {
+                updateGeographyCharts(e.target.value);
+            });
+
+            // Industry filters
+            document.getElementById('ind-geo-filter').addEventListener('change', () => {
+                const level = document.getElementById('ind-geo-filter').value;
+                const search = document.getElementById('ind-search').value;
+                updateIndustryCharts(level, search);
+            });
+
+            document.getElementById('ind-search').addEventListener('input', () => {
+                const level = document.getElementById('ind-geo-filter').value;
+                const search = document.getElementById('ind-search').value;
+                updateIndustryCharts(level, search);
+            });
+
+            // Explorer filters
+            document.getElementById('explorer-geo-level').addEventListener('change', () => {
+                const level = document.getElementById('explorer-geo-level').value;
+                const search = document.getElementById('explorer-geo-search').value;
+                updateExplorerGeoTable(level, search);
+            });
+
+            document.getElementById('explorer-geo-search').addEventListener('input', () => {
+                const level = document.getElementById('explorer-geo-level').value;
+                const search = document.getElementById('explorer-geo-search').value;
+                updateExplorerGeoTable(level, search);
+            });
+
+            document.getElementById('explorer-ind-level').addEventListener('change', () => {
+                const level = document.getElementById('explorer-ind-level').value;
+                const search = document.getElementById('explorer-ind-search').value;
+                updateExplorerIndTable(level, search);
+            });
+
+            document.getElementById('explorer-ind-search').addEventListener('input', () => {
+                const level = document.getElementById('explorer-ind-level').value;
+                const search = document.getElementById('explorer-ind-search').value;
+                updateExplorerIndTable(level, search);
+            });
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+</body>
+</html>
