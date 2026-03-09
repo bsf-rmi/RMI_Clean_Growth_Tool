@@ -1280,18 +1280,25 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
 
   if (valMap.size === 0) return;
 
-  // Color scale
+  // Color scale — use quantile for better differentiation on skewed data
   const allVals = Array.from(valMap.values());
   const clip = percentileClip(allVals, 0.02, 0.98);
   const cs = getColorScale(metricKey);
-  const color = plotlyScaleToD3(cs, clip.zmin, clip.zmax);
+  const csColors = cs.map(c => c[1]);
+  // Quantile scale: evenly distributes data values across color bins
+  const sortedVals = allVals.filter(v => v >= clip.zmin && v <= clip.zmax).sort((a, b) => a - b);
+  const color = sortedVals.length > 10
+    ? d3.scaleQuantile().domain(sortedVals).range(csColors)
+    : plotlyScaleToD3(cs, clip.zmin, clip.zmax);
 
   // Dimensions
   const width = plotEl.clientWidth || 960;
-  const height = 520;
-  const legendW = 20;
-  const legendH = 200;
-  const legendMargin = 60;
+  const legendW = 16;
+  const legendH = 180;
+  const legendGap = 80;  // space for legend + labels on right
+  const mapW = width - legendGap;
+  const mapH = Math.round(mapW * 0.62);  // ~USA aspect ratio
+  const height = mapH;
 
   // Clear previous content
   plotEl.innerHTML = '';
@@ -1305,14 +1312,17 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
     plotEl.parentElement.appendChild(tooltip);
   }
 
-  // Projection & path
-  const projection = d3.geoAlbersUsa().fitSize([width - legendMargin - 20, height - 10], geojson);
+  // Projection & path — fill available map area
+  const projection = d3.geoAlbersUsa().fitSize([mapW, mapH], geojson);
   const path = d3.geoPath(projection);
 
   const svg = d3.select(plotEl).append('svg')
     .attr('width', width)
     .attr('height', height)
+    .attr('viewBox', '0 0 ' + width + ' ' + height)
     .style('display', 'block')
+    .style('max-width', '100%')
+    .style('height', 'auto')
     .style('font-family', 'Source Sans Pro, Roboto, sans-serif');
 
   // Draw county fills
@@ -1371,8 +1381,8 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
       .style('pointer-events', 'none');
   } catch(e) { /* state boundaries optional */ }
 
-  // Color legend
-  const legendX = width - legendW - 18;
+  // Color legend — positioned to the right of the map
+  const legendX = mapW + 16;
   const legendY = (height - legendH) / 2;
   const defs = svg.append('defs');
   const gradId = 'cmap-grad-' + Date.now();
@@ -1386,18 +1396,21 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
   lg.append('rect').attr('width', legendW).attr('height', legendH)
     .attr('fill', 'url(#' + gradId + ')').attr('stroke', '#999').attr('stroke-width', 0.5);
 
+  // Legend axis — show min/max labels
   const legendScale = d3.scaleLinear().domain([clip.zmin, clip.zmax]).range([legendH, 0]);
-  const legendAxis = d3.axisRight(legendScale).ticks(5).tickSize(4);
+  const tickFmt = clip.zmax >= 100 ? d3.format(',.0f') : clip.zmax >= 1 ? d3.format('.2f') : d3.format('.3f');
+  const legendAxis = d3.axisRight(legendScale).tickValues([clip.zmin, clip.zmax]).tickSize(4).tickFormat(tickFmt);
   lg.append('g').attr('transform', 'translate(' + legendW + ',0)')
     .call(legendAxis)
     .call(g => g.select('.domain').remove())
-    .selectAll('text').style('font-size', '11px');
+    .selectAll('text').style('font-size', '10px');
 
+  // Legend title (wrapped if needed)
   lg.append('text')
-    .attr('x', legendW / 2).attr('y', -8)
+    .attr('x', legendW / 2).attr('y', -10)
     .attr('text-anchor', 'middle')
-    .style('font-size', '11px').style('font-weight', '600')
-    .text(metricLabel);
+    .style('font-size', '10px').style('font-weight', '600')
+    .text(metricLabel.length > 20 ? metricLabel.slice(0, 18) + '...' : metricLabel);
 }
 
 async function loadNational() {
