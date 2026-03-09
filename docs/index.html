@@ -863,7 +863,12 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
     btn.setAttribute('aria-selected', 'true');
-    document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+    const panel = document.getElementById('panel-' + btn.dataset.tab);
+    panel.classList.add('active');
+    // Resize any Plotly charts in the newly visible panel
+    setTimeout(() => {
+      panel.querySelectorAll('.js-plotly-plot').forEach(el => Plotly.Plots.resize(el));
+    }, 100);
   });
 });
 
@@ -1152,6 +1157,8 @@ function buildMapContainer(container, mapId, metricLabel, metricKey, level, getD
 
   const plotEl = document.createElement('div');
   plotEl.id = mapId;
+  plotEl.style.width = '100%';
+  plotEl.style.minHeight = '520px';
   mapWrap.appendChild(plotEl);
 
   const desc = document.createElement('div');
@@ -1179,6 +1186,8 @@ async function renderStateMap(plotEl, geos, metricKey, metricLabel) {
   });
 
   const clip = percentileClip(z, 0.02, 0.98);
+  plotEl.offsetHeight;
+  await new Promise(r => requestAnimationFrame(r));
   Plotly.newPlot(plotEl, [{
     type: 'choropleth',
     locationmode: 'USA-states',
@@ -1200,6 +1209,7 @@ async function renderStateMap(plotEl, geos, metricKey, metricLabel) {
     },
     images: rmiLogoImages(),
     margin: { t: 10, r: 10, b: 10, l: 10 },
+    width: plotEl.clientWidth || undefined,
     height: 480,
     font: { family: 'Source Sans Pro, Roboto, sans-serif' }
   }, { responsive: true });
@@ -1247,6 +1257,9 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
   if (locations.length === 0) return;
 
   const clip = percentileClip(z, 0.02, 0.98);
+  // Force browser reflow so Plotly reads correct container dimensions
+  plotEl.offsetHeight;
+  await new Promise(r => requestAnimationFrame(r));
   Plotly.newPlot(plotEl, [{
     type: 'choropleth',
     geojson: geojson,
@@ -1277,6 +1290,7 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
     },
     images: rmiLogoImages(),
     margin: { t: 10, r: 10, b: 10, l: 10 },
+    width: plotEl.clientWidth || undefined,
     height: 520,
     font: { family: 'Source Sans Pro, Roboto, sans-serif' }
   }, { responsive: true });
