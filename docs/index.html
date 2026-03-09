@@ -1280,22 +1280,16 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
 
   if (valMap.size === 0) return;
 
-  // Color scale — use quantile for better differentiation on skewed data
+  // Color scale — 5 quantile bins for maximum visual contrast
   const allVals = Array.from(valMap.values());
-  const clip = percentileClip(allVals, 0.02, 0.98);
   const cs = getColorScale(metricKey);
-  const csColors = cs.map(c => c[1]);
-  // Quantile scale: evenly distributes data values across color bins
-  const sortedVals = allVals.filter(v => v >= clip.zmin && v <= clip.zmax).sort((a, b) => a - b);
-  const color = sortedVals.length > 10
-    ? d3.scaleQuantile().domain(sortedVals).range(csColors)
-    : plotlyScaleToD3(cs, clip.zmin, clip.zmax);
+  // Pick 5 maximally-spaced colors from the 9-step palette
+  const fiveColors = [cs[0][1], cs[2][1], cs[4][1], cs[6][1], cs[8][1]];
+  const color = d3.scaleQuantile().domain(allVals).range(fiveColors);
 
   // Dimensions
   const width = plotEl.clientWidth || 960;
-  const legendW = 16;
-  const legendH = 180;
-  const legendGap = 80;  // space for legend + labels on right
+  const legendGap = 160;  // space for legend + range labels on right
   const mapW = width - legendGap;
   const mapH = Math.round(mapW * 0.62);  // ~USA aspect ratio
   const height = mapH;
@@ -1333,7 +1327,7 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
     .attr('d', path)
     .attr('fill', d => {
       const val = valMap.get(d.id);
-      return val != null ? color(val) : '#f5f5f5';
+      return val != null ? color(val) : '#ffffff';
     })
     .attr('stroke', '#fff')
     .attr('stroke-width', 0.25)
@@ -1381,36 +1375,50 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
       .style('pointer-events', 'none');
   } catch(e) { /* state boundaries optional */ }
 
-  // Color legend — positioned to the right of the map
+  // Discrete stepped legend — positioned to the right of the map
+  const quantiles = color.quantiles ? color.quantiles() : [];
+  const breaks = [d3.min(allVals), ...quantiles, d3.max(allVals)];
   const legendX = mapW + 16;
-  const legendY = (height - legendH) / 2;
-  const defs = svg.append('defs');
-  const gradId = 'cmap-grad-' + Date.now();
-  const grad = defs.append('linearGradient').attr('id', gradId)
-    .attr('x1', '0%').attr('y1', '100%').attr('x2', '0%').attr('y2', '0%');
-  cs.forEach(c => {
-    grad.append('stop').attr('offset', (c[0] * 100) + '%').attr('stop-color', c[1]);
+  const boxH = 22;
+  const totalLegH = fiveColors.length * boxH;
+  const legendY = (height - totalLegH) / 2 - 16;
+  const lg = svg.append('g').attr('transform', 'translate(' + legendX + ',' + legendY + ')');
+
+  // Title
+  lg.append('text')
+    .attr('x', 0).attr('y', 0)
+    .style('font-size', '11px').style('font-weight', '600')
+    .text(metricLabel);
+
+  const valFmt = d3.max(allVals) >= 100 ? d3.format(',.0f') : d3.max(allVals) >= 1 ? d3.format('.1f') : d3.format('.2f');
+
+  // Draw color boxes + labels (highest value on top)
+  fiveColors.slice().reverse().forEach((c, i) => {
+    const ri = fiveColors.length - 1 - i; // reverse index into breaks
+    const y = 14 + i * boxH;
+    lg.append('rect')
+      .attr('x', 0).attr('y', y)
+      .attr('width', 16).attr('height', boxH - 3)
+      .attr('fill', c).attr('stroke', '#999').attr('stroke-width', 0.5);
+    const lo = breaks[ri], hi = breaks[ri + 1];
+    lg.append('text')
+      .attr('x', 22).attr('y', y + boxH / 2 + 1)
+      .attr('dominant-baseline', 'middle')
+      .style('font-size', '10px')
+      .text(valFmt(lo) + ' – ' + valFmt(hi));
   });
 
-  const lg = svg.append('g').attr('transform', 'translate(' + legendX + ',' + legendY + ')');
-  lg.append('rect').attr('width', legendW).attr('height', legendH)
-    .attr('fill', 'url(#' + gradId + ')').attr('stroke', '#999').attr('stroke-width', 0.5);
-
-  // Legend axis — show min/max labels
-  const legendScale = d3.scaleLinear().domain([clip.zmin, clip.zmax]).range([legendH, 0]);
-  const tickFmt = clip.zmax >= 100 ? d3.format(',.0f') : clip.zmax >= 1 ? d3.format('.2f') : d3.format('.3f');
-  const legendAxis = d3.axisRight(legendScale).tickValues([clip.zmin, clip.zmax]).tickSize(4).tickFormat(tickFmt);
-  lg.append('g').attr('transform', 'translate(' + legendW + ',0)')
-    .call(legendAxis)
-    .call(g => g.select('.domain').remove())
-    .selectAll('text').style('font-size', '10px');
-
-  // Legend title (wrapped if needed)
+  // "No data" entry
+  const noDataY = 14 + fiveColors.length * boxH + 6;
+  lg.append('rect')
+    .attr('x', 0).attr('y', noDataY)
+    .attr('width', 16).attr('height', boxH - 3)
+    .attr('fill', '#fff').attr('stroke', '#999').attr('stroke-width', 0.5);
   lg.append('text')
-    .attr('x', legendW / 2).attr('y', -10)
-    .attr('text-anchor', 'middle')
-    .style('font-size', '10px').style('font-weight', '600')
-    .text(metricLabel.length > 20 ? metricLabel.slice(0, 18) + '...' : metricLabel);
+    .attr('x', 22).attr('y', noDataY + boxH / 2 + 1)
+    .attr('dominant-baseline', 'middle')
+    .style('font-size', '10px')
+    .text('No data');
 }
 
 async function loadNational() {
