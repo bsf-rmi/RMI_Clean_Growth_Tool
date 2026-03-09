@@ -681,6 +681,12 @@ function getCountyStateFips(countyFips) {
   return parent ? parent.state_fips : null;
 }
 
+function padGeoid(geoid, level) {
+  if (level === 'state') return String(geoid).padStart(2, '0');
+  if (level === 'county') return String(geoid).padStart(5, '0');
+  return String(geoid);
+}
+
 // ════════════════════════════════════════════
 //  SEARCH-SELECT WIDGET
 // ════════════════════════════════════════════
@@ -890,7 +896,7 @@ document.getElementById('reg-level').addEventListener('change', () => {
 async function loadRegional(level, geoid) {
   showSpinner();
   try {
-    const data = await fetchCSVGz('by_geography/' + level + '/' + geoid + '.csv.gz');
+    const data = await fetchCSVGz('by_geography/' + level + '/' + padGeoid(geoid, level) + '.csv.gz');
     const geoRec = getGeoRecord(geoid, level);
     const levelCode = LEVEL_MAP[level];
     const indMeta = metaIndustry.filter(r => r.geo_aggregation_level === levelCode);
@@ -1604,7 +1610,7 @@ async function loadIndustrySpace() {
     const highlightGeo = isGeoWidget ? isGeoWidget.getValue() : null;
     if (highlightGeo) {
       try {
-        const geoData = await fetchCSVGz('by_geography/' + level + '/' + highlightGeo + '.csv.gz');
+        const geoData = await fetchCSVGz('by_geography/' + level + '/' + padGeoid(highlightGeo, level) + '.csv.gz');
         rcaSet = new Set(geoData.filter(r => r.industry_comparative_advantage === 1).map(r => String(r.industry_code)));
       } catch (e) { console.warn('Could not load geo data for highlight', e); }
     }
