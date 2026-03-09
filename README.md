@@ -1,0 +1,1 @@
+This GitHub repository will become the publicly-available backend to RMI's Clean Growth Tool, to support data-pipeline and user-interface upgrades in 2026. As of 08 March 2026, the material in this repository has not yet been vetted. Use with caution. Contact Ben Feshbach for more information. 
