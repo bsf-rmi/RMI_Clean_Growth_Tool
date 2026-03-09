@@ -9,6 +9,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -200,6 +201,20 @@ body {
 }
 
 /* ── Spinner ── */
+.map-tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: rgba(255,255,255,.95);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 13px;
+  line-height: 1.4;
+  box-shadow: 0 2px 6px rgba(0,0,0,.15);
+  z-index: 1000;
+  display: none;
+  max-width: 260px;
+}
 .spinner-overlay {
   display: none;
   position: fixed;
@@ -1215,28 +1230,38 @@ async function renderStateMap(plotEl, geos, metricKey, metricLabel) {
   }, { responsive: true });
 }
 
-async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, parentGeoMap) {
-  // dataMap: Map of geoid -> metric value (at the source level)
-  // parentGeoMap: Map of geoid -> name (for tooltip of parent region)
-  // For county level, dataMap keys are county FIPS directly
-  // For CBSA/CSA/CZ, we map each county to its parent's value via crosswalk
+// Cache for US states TopoJSON (for state boundary overlay)
+let _statesTopo = null;
+async function fetchStatesTopo() {
+  if (_statesTopo) return _statesTopo;
+  const resp = await fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json');
+  _statesTopo = await resp.json();
+  return _statesTopo;
+}
 
+// Convert Plotly-format colorscale to a D3 interpolator
+function plotlyScaleToD3(cs, zmin, zmax) {
+  const domain = cs.map(c => zmin + c[0] * (zmax - zmin));
+  const range = cs.map(c => c[1]);
+  return d3.scaleLinear().domain(domain).range(range).clamp(true);
+}
+
+async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, parentGeoMap) {
   const geojson = await fetchGeoJSON();
-  const locations = [];
-  const z = [];
-  const hoverText = [];
+
+  // Build per-county value + hover text maps
+  const valMap = new Map();   // fips -> numeric value
+  const tipMap = new Map();   // fips -> hover HTML
 
   if (level === 'county') {
     geojson.features.forEach(f => {
       const fips = f.id;
-      if (dataMap.has(fips)) {
-        locations.push(fips);
-        z.push(dataMap.get(fips));
-        hoverText.push(getCountyDisplayName(fips) + '<br>' + metricLabel + ': ' + fmt(dataMap.get(fips)));
-      }
+      if (!dataMap.has(fips)) return;
+      const val = dataMap.get(fips);
+      valMap.set(fips, val);
+      tipMap.set(fips, getCountyDisplayName(fips) + '\n' + metricLabel + ': ' + fmt(val));
     });
   } else {
-    // Map counties to their parent region value
     const parentKey = level === 'cbsa' ? 'cbsa' : level === 'csa' ? 'csa' : 'cz';
     geojson.features.forEach(f => {
       const fips = f.id;
@@ -1246,54 +1271,133 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
       if (!parentInfo || !parentInfo.geoid) return;
       const val = dataMap.get(String(parentInfo.geoid));
       if (val == null) return;
-      locations.push(fips);
-      z.push(val);
+      valMap.set(fips, val);
       const countyName = parent.county_name || fips;
       const parentName = parentInfo.name || parentInfo.geoid;
-      hoverText.push(countyName + '<br>' + LEVEL_LABEL[level] + ': ' + parentName + '<br>' + metricLabel + ': ' + fmt(val));
+      tipMap.set(fips, countyName + '\n' + LEVEL_LABEL[level] + ': ' + parentName + '\n' + metricLabel + ': ' + fmt(val));
     });
   }
 
-  if (locations.length === 0) return;
+  if (valMap.size === 0) return;
 
-  const clip = percentileClip(z, 0.02, 0.98);
-  // Force browser reflow so Plotly reads correct container dimensions
-  plotEl.offsetHeight;
-  await new Promise(r => requestAnimationFrame(r));
-  Plotly.newPlot(plotEl, [{
-    type: 'choropleth',
-    geojson: geojson,
-    featureidkey: 'id',
-    locationmode: 'geojson-id',
-    locations: locations,
-    z: z,
-    zmin: clip.zmin,
-    zmax: clip.zmax,
-    text: hoverText,
-    hoverinfo: 'text',
-    colorscale: getColorScale(metricKey),
-    colorbar: { title: { text: metricLabel, font: { size: 12 } }, thickness: 15, len: 0.6 },
-    marker: { line: { width: 0 } }
-  }], {
-    geo: {
-      scope: 'usa',
-      projection: { type: 'albers usa' },
-      bgcolor: 'rgba(0,0,0,0)',
-      showland: false,
-      showlakes: false,
-      showframe: false,
-      showcoastlines: false,
-      showsubunits: true,
-      subunitcolor: '#444',
-      subunitwidth: 1
-    },
-    margin: { t: 0, r: 0, b: 0, l: 0 },
-    width: plotEl.clientWidth || undefined,
-    height: 520,
-    font: { family: 'Source Sans Pro, Roboto, sans-serif' },
-    paper_bgcolor: 'rgba(0,0,0,0)',
-    plot_bgcolor: 'rgba(0,0,0,0)'
-  }, { responsive: true });
+  // Color scale
+  const allVals = Array.from(valMap.values());
+  const clip = percentileClip(allVals, 0.02, 0.98);
+  const cs = getColorScale(metricKey);
+  const color = plotlyScaleToD3(cs, clip.zmin, clip.zmax);
+
+  // Dimensions
+  const width = plotEl.clientWidth || 960;
+  const height = 520;
+  const legendW = 20;
+  const legendH = 200;
+  const legendMargin = 60;
+
+  // Clear previous content
+  plotEl.innerHTML = '';
+
+  // Tooltip div
+  let tooltip = plotEl.parentElement.querySelector('.map-tooltip');
+  if (!tooltip) {
+    tooltip = document.createElement('div');
+    tooltip.className = 'map-tooltip';
+    plotEl.parentElement.style.position = 'relative';
+    plotEl.parentElement.appendChild(tooltip);
+  }
+
+  // Projection & path
+  const projection = d3.geoAlbersUsa().fitSize([width - legendMargin - 20, height - 10], geojson);
+  const path = d3.geoPath(projection);
+
+  const svg = d3.select(plotEl).append('svg')
+    .attr('width', width)
+    .attr('height', height)
+    .style('display', 'block')
+    .style('font-family', 'Source Sans Pro, Roboto, sans-serif');
+
+  // Draw county fills
+  svg.append('g')
+    .selectAll('path')
+    .data(geojson.features)
+    .join('path')
+    .attr('d', path)
+    .attr('fill', d => {
+      const val = valMap.get(d.id);
+      return val != null ? color(val) : '#f5f5f5';
+    })
+    .attr('stroke', '#fff')
+    .attr('stroke-width', 0.25)
+    .on('mouseenter', function(event, d) {
+      const tip = tipMap.get(d.id);
+      if (!tip) return;
+      d3.select(this).attr('stroke', '#333').attr('stroke-width', 1.5).raise();
+      tooltip.style.display = 'block';
+      tooltip.textContent = '';
+      tip.split('\n').forEach((line, i) => {
+        if (i > 0) tooltip.appendChild(document.createElement('br'));
+        tooltip.appendChild(document.createTextNode(line));
+      });
+    })
+    .on('mousemove', function(event) {
+      const rect = plotEl.getBoundingClientRect();
+      tooltip.style.left = (event.clientX - rect.left + 12) + 'px';
+      tooltip.style.top = (event.clientY - rect.top - 10) + 'px';
+    })
+    .on('mouseleave', function() {
+      d3.select(this).attr('stroke', '#fff').attr('stroke-width', 0.25);
+      tooltip.style.display = 'none';
+    });
+
+  // Draw state boundaries on top
+  try {
+    const statesTopo = await fetchStatesTopo();
+    const stateMesh = topojson.mesh(statesTopo, statesTopo.objects.states, (a, b) => a !== b);
+    svg.append('path')
+      .datum(stateMesh)
+      .attr('d', path)
+      .attr('fill', 'none')
+      .attr('stroke', '#444')
+      .attr('stroke-width', 0.8)
+      .attr('stroke-linejoin', 'round')
+      .style('pointer-events', 'none');
+    // Outer border
+    const nationMesh = topojson.mesh(statesTopo, statesTopo.objects.states, (a, b) => a === b);
+    svg.append('path')
+      .datum(nationMesh)
+      .attr('d', path)
+      .attr('fill', 'none')
+      .attr('stroke', '#444')
+      .attr('stroke-width', 1)
+      .style('pointer-events', 'none');
+  } catch(e) { /* state boundaries optional */ }
+
+  // Color legend
+  const legendX = width - legendW - 18;
+  const legendY = (height - legendH) / 2;
+  const defs = svg.append('defs');
+  const gradId = 'cmap-grad-' + Date.now();
+  const grad = defs.append('linearGradient').attr('id', gradId)
+    .attr('x1', '0%').attr('y1', '100%').attr('x2', '0%').attr('y2', '0%');
+  cs.forEach(c => {
+    grad.append('stop').attr('offset', (c[0] * 100) + '%').attr('stop-color', c[1]);
+  });
+
+  const lg = svg.append('g').attr('transform', 'translate(' + legendX + ',' + legendY + ')');
+  lg.append('rect').attr('width', legendW).attr('height', legendH)
+    .attr('fill', 'url(#' + gradId + ')').attr('stroke', '#999').attr('stroke-width', 0.5);
+
+  const legendScale = d3.scaleLinear().domain([clip.zmin, clip.zmax]).range([legendH, 0]);
+  const legendAxis = d3.axisRight(legendScale).ticks(5).tickSize(4);
+  lg.append('g').attr('transform', 'translate(' + legendW + ',0)')
+    .call(legendAxis)
+    .call(g => g.select('.domain').remove())
+    .selectAll('text').style('font-size', '11px');
+
+  lg.append('text')
+    .attr('x', legendW / 2).attr('y', -8)
+    .attr('text-anchor', 'middle')
+    .style('font-size', '11px').style('font-weight', '600')
+    .text(metricLabel);
 }
 
 async function loadNational() {
