@@ -578,6 +578,38 @@ function getColorScale(metricKey) {
   return CB_YLGNBU;
 }
 
+// Metrics that tend to be heavily right-skewed and benefit from log transform
+const SKEWED_METRICS = new Set(['location_quotient', 'industry_employment_share', 'industrial_diversity']);
+
+// Build a continuous D3 color scale with percentile clipping
+function buildContinuousColor(allVals, metricKey) {
+  const binaryMetrics = ['industry_present', 'industry_comparative_advantage', 'strategic_gain_possible'];
+  if (binaryMetrics.includes(metricKey)) {
+    return { scale: v => v >= 1 ? '#2c7bb6' : '#e8e8e8', breaks: [0, 1], isBinary: true };
+  }
+  const sorted = allVals.slice().sort((a, b) => a - b);
+  const p2 = sorted[Math.floor(sorted.length * 0.02)];
+  const p98 = sorted[Math.min(sorted.length - 1, Math.ceil(sorted.length * 0.98))];
+  const lo = p2, hi = p98;
+  if (lo === hi) {
+    return { scale: () => '#7fcdbb', breaks: [lo, hi], isBinary: false };
+  }
+  // Use log scale for skewed metrics (shift to positive domain)
+  let scale;
+  if (SKEWED_METRICS.has(metricKey) && lo > 0) {
+    scale = d3.scaleSequentialLog(d3.interpolateYlGnBu).domain([lo, hi]).clamp(true);
+  } else {
+    scale = d3.scaleSequential(d3.interpolateYlGnBu).domain([lo, hi]).clamp(true);
+  }
+  // Generate legend breaks (7 evenly spaced in the domain)
+  const nBreaks = 7;
+  const breaks = [];
+  for (let i = 0; i <= nBreaks; i++) {
+    breaks.push(lo + (hi - lo) * i / nBreaks);
+  }
+  return { scale, breaks, isBinary: false };
+}
+
 // Compute percentile-based zmin/zmax to prevent outlier compression
 function percentileClip(values, lo, hi) {
   if (!values.length) return { zmin: 0, zmax: 1 };
@@ -1206,7 +1238,7 @@ function buildMapContainer(container, mapId, metricLabel, metricKey, level, getD
   const plotEl = document.createElement('div');
   plotEl.id = mapId;
   plotEl.style.width = '100%';
-  plotEl.style.minHeight = '520px';
+  plotEl.style.minHeight = '600px';
   mapWrap.appendChild(plotEl);
 
   const desc = document.createElement('div');
@@ -1248,15 +1280,14 @@ async function renderStateMap(plotEl, geos, metricKey, metricLabel) {
     }
   });
 
-  // Quantile color scale (same approach as county maps) — 7 bins
+  // Continuous color scale with percentile clipping
   const allVals = Array.from(stateValMap.values());
-  const cs = getColorScale(metricKey);
-  const binColors = [cs[0][1], cs[1][1], cs[2][1], cs[4][1], cs[5][1], cs[7][1], cs[8][1]];
-  const color = d3.scaleQuantile().domain(allVals).range(binColors);
+  const colorInfo = buildContinuousColor(allVals, metricKey);
+  const color = colorInfo.scale;
 
   // Dimensions
   const width = plotEl.clientWidth || 960;
-  const legendGap = 160;
+  const legendGap = 145;
   const mapW = width - legendGap;
   const mapH = Math.round(mapW * 0.62);
   const height = mapH;
@@ -1302,7 +1333,7 @@ async function renderStateMap(plotEl, geos, metricKey, metricLabel) {
     .attr('d', path)
     .attr('fill', d => {
       const val = stateValByTopoId.get(d.id);
-      return val != null ? color(val) : '#f0f0f0';
+      return val != null ? color(val) : '#e8e8e8';
     })
     .attr('stroke', '#666')
     .attr('stroke-width', 1.2)
@@ -1310,10 +1341,16 @@ async function renderStateMap(plotEl, geos, metricKey, metricLabel) {
     .on('mouseenter', function(event, d) {
       const tip = stateTipByTopoId.get(d.id);
       if (!tip) return;
-      d3.select(this).attr('stroke', '#222').attr('stroke-width', 2.5).raise();
+      d3.select(this).attr('stroke', '#45CFCC').attr('stroke-width', 2.5).style('fill-opacity', 0.95).raise();
       tooltip.style.display = 'block';
       tooltip.textContent = '';
-      tip.split('\n').forEach((line, i) => {
+      const val = stateValByTopoId.get(d.id);
+      let pctRank = '';
+      if (val != null) {
+        const rank = allVals.filter(v => v <= val).length;
+        pctRank = '\nPercentile: ' + Math.round(100 * rank / allVals.length) + '%';
+      }
+      (tip + pctRank).split('\n').forEach((line, i) => {
         if (i > 0) tooltip.appendChild(document.createElement('br'));
         tooltip.appendChild(document.createTextNode(line));
       });
@@ -1324,7 +1361,7 @@ async function renderStateMap(plotEl, geos, metricKey, metricLabel) {
       tooltip.style.top = (event.clientY - rect.top - 10) + 'px';
     })
     .on('mouseleave', function() {
-      d3.select(this).attr('stroke', '#666').attr('stroke-width', 1.2);
+      d3.select(this).attr('stroke', '#666').attr('stroke-width', 1.2).style('fill-opacity', 1);
       tooltip.style.display = 'none';
     })
     .on('click', function(event, d) {
@@ -1345,12 +1382,12 @@ async function renderStateMap(plotEl, geos, metricKey, metricLabel) {
     .attr('stroke-linejoin', 'round')
     .style('pointer-events', 'none');
 
-  // Legend (same style as county maps for consistency)
-  const quantiles = color.quantiles ? color.quantiles() : [];
-  const breaks = [d3.min(allVals), ...quantiles, d3.max(allVals)];
+  // Legend — continuous gradient (same approach as county maps)
+  const breaks = colorInfo.breaks;
+  const nLegendSteps = colorInfo.isBinary ? 2 : 7;
   const legendX = mapW + 16;
   const boxH = 18;
-  const totalLegH = binColors.length * boxH;
+  const totalLegH = nLegendSteps * boxH;
   const legendY = (height - totalLegH) / 2 - 16;
   const lg = svg.append('g').attr('transform', 'translate(' + legendX + ',' + legendY + ')');
 
@@ -1360,23 +1397,34 @@ async function renderStateMap(plotEl, geos, metricKey, metricLabel) {
 
   const valFmt = d3.max(allVals) >= 100 ? d3.format(',.0f') : d3.max(allVals) >= 1 ? d3.format('.1f') : d3.format('.2f');
 
-  binColors.slice().reverse().forEach((c, i) => {
-    const ri = binColors.length - 1 - i;
-    const y = 14 + i * boxH;
-    lg.append('rect').attr('x', 0).attr('y', y)
-      .attr('width', 16).attr('height', boxH - 3)
-      .attr('fill', c).attr('stroke', '#999').attr('stroke-width', 0.5);
-    const lo = breaks[ri], hi = breaks[ri + 1];
-    lg.append('text').attr('x', 22).attr('y', y + boxH / 2 + 1)
-      .attr('dominant-baseline', 'middle')
-      .style('font-size', '10px')
-      .text(valFmt(lo) + ' \u2013 ' + valFmt(hi));
-  });
+  if (colorInfo.isBinary) {
+    [{ c: '#2c7bb6', label: 'Yes' }, { c: '#e8e8e8', label: 'No' }].forEach((item, i) => {
+      const y = 14 + i * boxH;
+      lg.append('rect').attr('x', 0).attr('y', y).attr('width', 16).attr('height', boxH - 3).attr('fill', item.c).attr('stroke', '#999').attr('stroke-width', 0.5);
+      lg.append('text').attr('x', 22).attr('y', y + boxH / 2 + 1).attr('dominant-baseline', 'middle').style('font-size', '10px').text(item.label);
+    });
+  } else {
+    const legBreaks = breaks;
+    for (let i = nLegendSteps - 1; i >= 0; i--) {
+      const ri = nLegendSteps - 1 - i;
+      const lo = legBreaks[i];
+      const hi = legBreaks[i + 1];
+      const midVal = (lo + hi) / 2;
+      const y = 14 + ri * boxH;
+      lg.append('rect').attr('x', 0).attr('y', y)
+        .attr('width', 16).attr('height', boxH - 3)
+        .attr('fill', color(midVal)).attr('stroke', '#999').attr('stroke-width', 0.5);
+      lg.append('text').attr('x', 22).attr('y', y + boxH / 2 + 1)
+        .attr('dominant-baseline', 'middle')
+        .style('font-size', '10px')
+        .text(valFmt(lo) + ' \u2013 ' + valFmt(hi));
+    }
+  }
 
-  const noDataY = 14 + binColors.length * boxH + 6;
+  const noDataY = 14 + nLegendSteps * boxH + 6;
   lg.append('rect').attr('x', 0).attr('y', noDataY)
     .attr('width', 16).attr('height', boxH - 3)
-    .attr('fill', '#f0f0f0').attr('stroke', '#999').attr('stroke-width', 0.5);
+    .attr('fill', '#e8e8e8').attr('stroke', '#999').attr('stroke-width', 0.5);
   lg.append('text').attr('x', 22).attr('y', noDataY + boxH / 2 + 1)
     .attr('dominant-baseline', 'middle')
     .style('font-size', '10px')
@@ -1532,15 +1580,14 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
 
   if (valMap.size === 0) return;
 
-  // Color scale — 7 quantile bins for better visual differentiation
+  // Continuous color scale with percentile clipping
   const allVals = Array.from(valMap.values());
-  const cs = getColorScale(metricKey);
-  const binColors = [cs[0][1], cs[1][1], cs[2][1], cs[4][1], cs[5][1], cs[7][1], cs[8][1]];
-  const color = d3.scaleQuantile().domain(allVals).range(binColors);
+  const colorInfo = buildContinuousColor(allVals, metricKey);
+  const color = colorInfo.scale;
 
   // Dimensions
   const width = plotEl.clientWidth || 960;
-  const legendGap = 160;
+  const legendGap = 145;
   const mapW = width - legendGap;
   const mapH = Math.round(mapW * 0.62);
   const height = mapH;
@@ -1597,7 +1644,7 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
     .on('zoom', (event) => {
       mapG.attr('transform', event.transform);
       // Scale strokes inversely so they stay crisp
-      mapG.selectAll('.county-path').attr('stroke-width', 0.4 / event.transform.k);
+      mapG.selectAll('.county-path').attr('stroke-width', 0.3 / event.transform.k);
       mapG.selectAll('.state-boundary').attr('stroke-width', 1.2 / event.transform.k);
       mapG.selectAll('.nation-boundary').attr('stroke-width', 1.5 / event.transform.k);
       mapG.selectAll('.region-boundary').attr('stroke-width', 2 / event.transform.k);
@@ -1618,18 +1665,25 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
     .attr('d', path)
     .attr('fill', d => {
       const val = valMap.get(d.id);
-      return val != null ? color(val) : '#f0f0f0';
+      return val != null ? color(val) : '#e8e8e8';
     })
-    .attr('stroke', '#9aa')
-    .attr('stroke-width', 0.4)
+    .attr('stroke', '#bcc')
+    .attr('stroke-width', 0.3)
     .style('cursor', d => valMap.has(d.id) ? 'pointer' : 'default')
     .on('mouseenter', function(event, d) {
       const tip = tipMap.get(d.id);
       if (!tip) return;
-      d3.select(this).attr('stroke', '#333').attr('stroke-width', 1.5).raise();
+      d3.select(this).attr('stroke', '#45CFCC').attr('stroke-width', 2).style('fill-opacity', 0.95).raise();
       tooltip.style.display = 'block';
       tooltip.textContent = '';
-      tip.split('\n').forEach((line, i) => {
+      // Add percentile rank
+      const val = valMap.get(d.id);
+      let pctRank = '';
+      if (val != null) {
+        const rank = allVals.filter(v => v <= val).length;
+        pctRank = '\nPercentile: ' + Math.round(100 * rank / allVals.length) + '%';
+      }
+      (tip + pctRank).split('\n').forEach((line, i) => {
         if (i > 0) tooltip.appendChild(document.createElement('br'));
         tooltip.appendChild(document.createTextNode(line));
       });
@@ -1640,7 +1694,7 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
       tooltip.style.top = (event.clientY - rect.top - 10) + 'px';
     })
     .on('mouseleave', function() {
-      d3.select(this).attr('stroke', '#9aa').attr('stroke-width', 0.4);
+      d3.select(this).attr('stroke', '#bcc').attr('stroke-width', 0.3).style('fill-opacity', 1);
       tooltip.style.display = 'none';
     })
     .on('click', function(event, d) {
@@ -1728,12 +1782,12 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
     } catch(e) { console.warn('Region boundaries failed:', e); }
   }
 
-  // Legend (fixed, outside zoom group)
-  const quantiles = color.quantiles ? color.quantiles() : [];
-  const breaks = [d3.min(allVals), ...quantiles, d3.max(allVals)];
+  // Legend (fixed, outside zoom group) — continuous gradient
   const legendX = mapW + 16;
+  const breaks = colorInfo.breaks;
+  const nLegendSteps = colorInfo.isBinary ? 2 : 7;
   const boxH = 18;
-  const totalLegH = binColors.length * boxH;
+  const totalLegH = nLegendSteps * boxH;
   const legendY = (height - totalLegH) / 2 - 16;
   const lg = legendG.append('g').attr('transform', 'translate(' + legendX + ',' + legendY + ')');
 
@@ -1744,26 +1798,39 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
 
   const valFmt = d3.max(allVals) >= 100 ? d3.format(',.0f') : d3.max(allVals) >= 1 ? d3.format('.1f') : d3.format('.2f');
 
-  binColors.slice().reverse().forEach((c, i) => {
-    const ri = binColors.length - 1 - i;
-    const y = 14 + i * boxH;
-    lg.append('rect')
-      .attr('x', 0).attr('y', y)
-      .attr('width', 16).attr('height', boxH - 3)
-      .attr('fill', c).attr('stroke', '#999').attr('stroke-width', 0.5);
-    const lo = breaks[ri], hi = breaks[ri + 1];
-    lg.append('text')
-      .attr('x', 22).attr('y', y + boxH / 2 + 1)
-      .attr('dominant-baseline', 'middle')
-      .style('font-size', '10px')
-      .text(valFmt(lo) + ' \u2013 ' + valFmt(hi));
-  });
+  if (colorInfo.isBinary) {
+    // Binary legend
+    [{ c: '#2c7bb6', label: 'Yes' }, { c: '#e8e8e8', label: 'No' }].forEach((item, i) => {
+      const y = 14 + i * boxH;
+      lg.append('rect').attr('x', 0).attr('y', y).attr('width', 16).attr('height', boxH - 3).attr('fill', item.c).attr('stroke', '#999').attr('stroke-width', 0.5);
+      lg.append('text').attr('x', 22).attr('y', y + boxH / 2 + 1).attr('dominant-baseline', 'middle').style('font-size', '10px').text(item.label);
+    });
+  } else {
+    // Continuous gradient legend — show color swatches at evenly-spaced breakpoints
+    const legBreaks = breaks;
+    for (let i = nLegendSteps - 1; i >= 0; i--) {
+      const ri = nLegendSteps - 1 - i;
+      const lo = legBreaks[i];
+      const hi = legBreaks[i + 1];
+      const midVal = (lo + hi) / 2;
+      const y = 14 + ri * boxH;
+      lg.append('rect')
+        .attr('x', 0).attr('y', y)
+        .attr('width', 16).attr('height', boxH - 3)
+        .attr('fill', color(midVal)).attr('stroke', '#999').attr('stroke-width', 0.5);
+      lg.append('text')
+        .attr('x', 22).attr('y', y + boxH / 2 + 1)
+        .attr('dominant-baseline', 'middle')
+        .style('font-size', '10px')
+        .text(valFmt(lo) + ' \u2013 ' + valFmt(hi));
+    }
+  }
 
-  const noDataY = 14 + binColors.length * boxH + 6;
+  const noDataY = 14 + nLegendSteps * boxH + 6;
   lg.append('rect')
     .attr('x', 0).attr('y', noDataY)
     .attr('width', 16).attr('height', boxH - 3)
-    .attr('fill', '#f0f0f0').attr('stroke', '#999').attr('stroke-width', 0.5);
+    .attr('fill', '#e8e8e8').attr('stroke', '#999').attr('stroke-width', 0.5);
   lg.append('text')
     .attr('x', 22).attr('y', noDataY + boxH / 2 + 1)
     .attr('dominant-baseline', 'middle')
@@ -2134,18 +2201,18 @@ function runForceLayout(nodes, edges, levelCode) {
     weight: e.weight
   })).filter(l => l.source && l.target);
 
-  // Run d3-force simulation synchronously
+  // Run d3-force simulation synchronously (tuned to approximate Fruchterman-Reingold)
   const sim = d3.forceSimulation(simNodes)
     .force('link', d3.forceLink(simLinks).id(d => d.id)
-      .distance(d => 120 * (1 - d.weight) + 10)
-      .strength(d => d.weight * 0.8))
-    .force('charge', d3.forceManyBody().strength(-60).distanceMax(500))
+      .distance(d => 80 * (1 - d.weight) + 5)
+      .strength(d => d.weight * 1.2))
+    .force('charge', d3.forceManyBody().strength(-40).distanceMax(400))
     .force('center', d3.forceCenter(0, 0))
-    .force('collide', d3.forceCollide(8))
+    .force('collide', d3.forceCollide(6))
     .stop();
 
-  // Run 300 iterations for better convergence
-  for (let i = 0; i < 300; i++) sim.tick();
+  // Run 400 iterations for better convergence
+  for (let i = 0; i < 400; i++) sim.tick();
 
   const positions = new Map();
   simNodes.forEach(sn => positions.set(sn.id, { x: sn.x, y: sn.y }));
@@ -2214,7 +2281,7 @@ async function loadIndustrySpace() {
       x: edgeX, y: edgeY,
       mode: 'lines',
       type: 'scatter',
-      line: { color: 'rgba(150,150,150,0.35)', width: 0.5 },
+      line: { color: 'rgba(160,160,160,0.25)', width: 0.7 },
       hoverinfo: 'none',
       showlegend: false
     };
@@ -2223,7 +2290,7 @@ async function loadIndustrySpace() {
     const complexities = nodes.map(n => n.industry_complexity);
     const ubiquities = nodes.map(n => n.industry_ubiquity);
     const maxUbiq = Math.max(...ubiquities);
-    const sizes = ubiquities.map(u => Math.max(6, 4 + (u / maxUbiq) * 18));
+    const sizes = ubiquities.map(u => Math.max(3, 2 + (u / maxUbiq) * 12));
 
     let nodeColors, nodeColorbar;
     if (rcaSet) {
@@ -2231,22 +2298,22 @@ async function loadIndustrySpace() {
       nodeColorbar = undefined;
     } else {
       nodeColors = complexities;
-      nodeColorbar = { title: { text: 'Industry Complexity', font: { size: 11 } }, thickness: 15 };
+      nodeColorbar = { title: { text: 'ICI', font: { size: 11 } }, thickness: 15 };
     }
 
     const nodeTrace = {
       x: nodes.map(n => { const p = positions.get(String(n.industry_code)); return p ? p.x : 0; }),
       y: nodes.map(n => { const p = positions.get(String(n.industry_code)); return p ? p.y : 0; }),
-      text: nodes.map(n => n.industry_description + '<br>Industry Code: ' + n.industry_code + '<br>Industry Complexity: ' + fmt(n.industry_complexity) + '<br>Ubiquity: ' + n.industry_ubiquity + '<br>Centrality: ' + fmt(n.industry_centrality, 5) + (rcaSet ? '<br>Comparative Advantage: ' + (rcaSet.has(String(n.industry_code)) ? 'Yes' : 'No') : '')),
+      text: nodes.map(n => n.industry_description + '<br>Industry Code: ' + n.industry_code + '<br>ICI: ' + fmt(n.industry_complexity) + '<br>Ubiquity: ' + n.industry_ubiquity + '<br>Centrality: ' + fmt(n.industry_centrality, 5) + (rcaSet ? '<br>Comparative Advantage: ' + (rcaSet.has(String(n.industry_code)) ? 'Yes' : 'No') : '')),
       mode: 'markers',
       type: 'scatter',
       marker: {
         size: sizes,
         color: nodeColors,
-        colorscale: rcaSet ? undefined : 'Viridis',
+        colorscale: rcaSet ? undefined : 'Plasma',
         colorbar: nodeColorbar,
-        line: { color: 'rgba(0,0,0,0.3)', width: 0.7 },
-        opacity: rcaSet ? nodes.map(n => rcaSet.has(String(n.industry_code)) ? 1 : 0.2) : 0.9
+        line: { color: 'rgba(0,0,0,0.15)', width: 0.5 },
+        opacity: rcaSet ? nodes.map(n => rcaSet.has(String(n.industry_code)) ? 1 : 0.12) : 0.85
       },
       hoverinfo: 'text',
       showlegend: false
