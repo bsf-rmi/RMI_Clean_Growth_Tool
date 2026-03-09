@@ -1248,11 +1248,11 @@ async function renderStateMap(plotEl, geos, metricKey, metricLabel) {
     }
   });
 
-  // Quantile color scale (same approach as county maps)
+  // Quantile color scale (same approach as county maps) — 7 bins
   const allVals = Array.from(stateValMap.values());
   const cs = getColorScale(metricKey);
-  const fiveColors = [cs[0][1], cs[2][1], cs[4][1], cs[6][1], cs[8][1]];
-  const color = d3.scaleQuantile().domain(allVals).range(fiveColors);
+  const binColors = [cs[0][1], cs[1][1], cs[2][1], cs[4][1], cs[5][1], cs[7][1], cs[8][1]];
+  const color = d3.scaleQuantile().domain(allVals).range(binColors);
 
   // Dimensions
   const width = plotEl.clientWidth || 960;
@@ -1304,13 +1304,13 @@ async function renderStateMap(plotEl, geos, metricKey, metricLabel) {
       const val = stateValByTopoId.get(d.id);
       return val != null ? color(val) : '#f0f0f0';
     })
-    .attr('stroke', '#fff')
-    .attr('stroke-width', 1)
+    .attr('stroke', '#666')
+    .attr('stroke-width', 1.2)
     .style('cursor', d => stateValByTopoId.has(d.id) ? 'pointer' : 'default')
     .on('mouseenter', function(event, d) {
       const tip = stateTipByTopoId.get(d.id);
       if (!tip) return;
-      d3.select(this).attr('stroke', '#333').attr('stroke-width', 2).raise();
+      d3.select(this).attr('stroke', '#222').attr('stroke-width', 2.5).raise();
       tooltip.style.display = 'block';
       tooltip.textContent = '';
       tip.split('\n').forEach((line, i) => {
@@ -1324,7 +1324,7 @@ async function renderStateMap(plotEl, geos, metricKey, metricLabel) {
       tooltip.style.top = (event.clientY - rect.top - 10) + 'px';
     })
     .on('mouseleave', function() {
-      d3.select(this).attr('stroke', '#fff').attr('stroke-width', 1);
+      d3.select(this).attr('stroke', '#666').attr('stroke-width', 1.2);
       tooltip.style.display = 'none';
     })
     .on('click', function(event, d) {
@@ -1340,16 +1340,17 @@ async function renderStateMap(plotEl, geos, metricKey, metricLabel) {
     .datum(stateMesh)
     .attr('d', path)
     .attr('fill', 'none')
-    .attr('stroke', '#444')
-    .attr('stroke-width', 0.8)
+    .attr('stroke', '#333')
+    .attr('stroke-width', 1.2)
+    .attr('stroke-linejoin', 'round')
     .style('pointer-events', 'none');
 
   // Legend (same style as county maps for consistency)
   const quantiles = color.quantiles ? color.quantiles() : [];
   const breaks = [d3.min(allVals), ...quantiles, d3.max(allVals)];
   const legendX = mapW + 16;
-  const boxH = 22;
-  const totalLegH = fiveColors.length * boxH;
+  const boxH = 18;
+  const totalLegH = binColors.length * boxH;
   const legendY = (height - totalLegH) / 2 - 16;
   const lg = svg.append('g').attr('transform', 'translate(' + legendX + ',' + legendY + ')');
 
@@ -1359,8 +1360,8 @@ async function renderStateMap(plotEl, geos, metricKey, metricLabel) {
 
   const valFmt = d3.max(allVals) >= 100 ? d3.format(',.0f') : d3.max(allVals) >= 1 ? d3.format('.1f') : d3.format('.2f');
 
-  fiveColors.slice().reverse().forEach((c, i) => {
-    const ri = fiveColors.length - 1 - i;
+  binColors.slice().reverse().forEach((c, i) => {
+    const ri = binColors.length - 1 - i;
     const y = 14 + i * boxH;
     lg.append('rect').attr('x', 0).attr('y', y)
       .attr('width', 16).attr('height', boxH - 3)
@@ -1372,7 +1373,7 @@ async function renderStateMap(plotEl, geos, metricKey, metricLabel) {
       .text(valFmt(lo) + ' \u2013 ' + valFmt(hi));
   });
 
-  const noDataY = 14 + fiveColors.length * boxH + 6;
+  const noDataY = 14 + binColors.length * boxH + 6;
   lg.append('rect').attr('x', 0).attr('y', noDataY)
     .attr('width', 16).attr('height', boxH - 3)
     .attr('fill', '#f0f0f0').attr('stroke', '#999').attr('stroke-width', 0.5);
@@ -1531,11 +1532,11 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
 
   if (valMap.size === 0) return;
 
-  // Color scale — 5 quantile bins for maximum visual contrast
+  // Color scale — 7 quantile bins for better visual differentiation
   const allVals = Array.from(valMap.values());
   const cs = getColorScale(metricKey);
-  const fiveColors = [cs[0][1], cs[2][1], cs[4][1], cs[6][1], cs[8][1]];
-  const color = d3.scaleQuantile().domain(allVals).range(fiveColors);
+  const binColors = [cs[0][1], cs[1][1], cs[2][1], cs[4][1], cs[5][1], cs[7][1], cs[8][1]];
+  const color = d3.scaleQuantile().domain(allVals).range(binColors);
 
   // Dimensions
   const width = plotEl.clientWidth || 960;
@@ -1596,10 +1597,10 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
     .on('zoom', (event) => {
       mapG.attr('transform', event.transform);
       // Scale strokes inversely so they stay crisp
-      mapG.selectAll('.county-path').attr('stroke-width', 0.25 / event.transform.k);
-      mapG.selectAll('.state-boundary').attr('stroke-width', 0.8 / event.transform.k);
-      mapG.selectAll('.nation-boundary').attr('stroke-width', 1 / event.transform.k);
-      mapG.selectAll('.region-boundary').attr('stroke-width', 1.5 / event.transform.k);
+      mapG.selectAll('.county-path').attr('stroke-width', 0.4 / event.transform.k);
+      mapG.selectAll('.state-boundary').attr('stroke-width', 1.2 / event.transform.k);
+      mapG.selectAll('.nation-boundary').attr('stroke-width', 1.5 / event.transform.k);
+      mapG.selectAll('.region-boundary').attr('stroke-width', 2 / event.transform.k);
     })
     .on('start', () => svg.style('cursor', 'grabbing'))
     .on('end', () => svg.style('cursor', 'grab'));
@@ -1619,8 +1620,8 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
       const val = valMap.get(d.id);
       return val != null ? color(val) : '#f0f0f0';
     })
-    .attr('stroke', '#fff')
-    .attr('stroke-width', 0.25)
+    .attr('stroke', '#9aa')
+    .attr('stroke-width', 0.4)
     .style('cursor', d => valMap.has(d.id) ? 'pointer' : 'default')
     .on('mouseenter', function(event, d) {
       const tip = tipMap.get(d.id);
@@ -1639,7 +1640,7 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
       tooltip.style.top = (event.clientY - rect.top - 10) + 'px';
     })
     .on('mouseleave', function() {
-      d3.select(this).attr('stroke', '#fff').attr('stroke-width', 0.25);
+      d3.select(this).attr('stroke', '#9aa').attr('stroke-width', 0.4);
       tooltip.style.display = 'none';
     })
     .on('click', function(event, d) {
@@ -1664,8 +1665,8 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
       .datum(stateMesh)
       .attr('d', path)
       .attr('fill', 'none')
-      .attr('stroke', '#444')
-      .attr('stroke-width', 0.8)
+      .attr('stroke', '#333')
+      .attr('stroke-width', 1.2)
       .attr('stroke-linejoin', 'round')
       .style('pointer-events', 'none');
     const nationMesh = topojson.mesh(statesTopo, statesTopo.objects.states, (a, b) => a === b);
@@ -1674,8 +1675,8 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
       .datum(nationMesh)
       .attr('d', path)
       .attr('fill', 'none')
-      .attr('stroke', '#444')
-      .attr('stroke-width', 1)
+      .attr('stroke', '#222')
+      .attr('stroke-width', 1.5)
       .style('pointer-events', 'none');
   } catch(e) { /* state boundaries optional */ }
 
@@ -1731,8 +1732,8 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
   const quantiles = color.quantiles ? color.quantiles() : [];
   const breaks = [d3.min(allVals), ...quantiles, d3.max(allVals)];
   const legendX = mapW + 16;
-  const boxH = 22;
-  const totalLegH = fiveColors.length * boxH;
+  const boxH = 18;
+  const totalLegH = binColors.length * boxH;
   const legendY = (height - totalLegH) / 2 - 16;
   const lg = legendG.append('g').attr('transform', 'translate(' + legendX + ',' + legendY + ')');
 
@@ -1743,8 +1744,8 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
 
   const valFmt = d3.max(allVals) >= 100 ? d3.format(',.0f') : d3.max(allVals) >= 1 ? d3.format('.1f') : d3.format('.2f');
 
-  fiveColors.slice().reverse().forEach((c, i) => {
-    const ri = fiveColors.length - 1 - i;
+  binColors.slice().reverse().forEach((c, i) => {
+    const ri = binColors.length - 1 - i;
     const y = 14 + i * boxH;
     lg.append('rect')
       .attr('x', 0).attr('y', y)
@@ -1758,7 +1759,7 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
       .text(valFmt(lo) + ' \u2013 ' + valFmt(hi));
   });
 
-  const noDataY = 14 + fiveColors.length * boxH + 6;
+  const noDataY = 14 + binColors.length * boxH + 6;
   lg.append('rect')
     .attr('x', 0).attr('y', noDataY)
     .attr('width', 16).attr('height', boxH - 3)
