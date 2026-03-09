@@ -334,11 +334,7 @@ body {
 <!-- Header -->
 <div class="header">
   <a href="https://rmi.org" target="_blank" rel="noopener" class="header-logo" aria-label="RMI Home">
-    <svg viewBox="0 0 120 40" width="90" height="32" fill="white" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <polygon points="0,38 16,6 32,38" fill="none" stroke="white" stroke-width="3" stroke-linejoin="round"/>
-      <polygon points="20,38 36,6 52,38" fill="none" stroke="white" stroke-width="3" stroke-linejoin="round"/>
-      <text x="60" y="32" font-family="Source Sans Pro, Arial, sans-serif" font-weight="700" font-size="28" fill="white">RMI</text>
-    </svg>
+    <img src="rmi_logo_white.svg" alt="RMI" height="36">
   </a>
   <div class="header-title">Clean Growth Tool</div>
   <div class="header-subtitle">Economic Complexity Dashboard</div>
@@ -460,11 +456,7 @@ body {
     <strong>Source:</strong> <a href="https://rmi.org" target="_blank" rel="noopener">RMI Clean Growth Tool</a>
   </div>
   <div class="footer-right">
-    <svg viewBox="0 0 120 40" width="72" height="26" xmlns="http://www.w3.org/2000/svg" aria-label="RMI">
-      <polygon points="0,38 16,6 32,38" fill="none" stroke="#003B63" stroke-width="3" stroke-linejoin="round"/>
-      <polygon points="20,38 36,6 52,38" fill="none" stroke="#003B63" stroke-width="3" stroke-linejoin="round"/>
-      <text x="60" y="32" font-family="Source Sans Pro, Arial, sans-serif" font-weight="700" font-size="28" fill="#003B63">RMI</text>
-    </svg>
+    <img src="rmi_logo_dark.svg" alt="RMI" height="28">
   </div>
 </div>
 
@@ -492,14 +484,38 @@ let stateFipsToAbbr = null;      // Map: "01" -> "AL"
 let countyToParent = null;       // Map: countyGeoid -> { cbsa: {geoid,name}, csa: {geoid,name}, cz: {geoid,name} }
 const COUNTY_GEOJSON_URL = 'https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json';
 
-const RMI_COLORSCALE = [
-  [0, '#E0F7F6'],
-  [0.2, '#A8EDEA'],
-  [0.4, '#45CFCC'],
-  [0.6, '#1A8F96'],
-  [0.8, '#0B5F7C'],
-  [1, '#003B63']
+// ColorBrewer palettes
+const CB_YLGNBU = [
+  [0, '#ffffd9'],
+  [0.125, '#edf8b1'],
+  [0.25, '#c7e9b4'],
+  [0.375, '#7fcdbb'],
+  [0.5, '#41b6c4'],
+  [0.625, '#1d91c0'],
+  [0.75, '#225ea8'],
+  [0.875, '#253494'],
+  [1, '#081d58']
 ];
+const CB_RDYLBU = [
+  [0, '#d73027'],
+  [0.125, '#f46d43'],
+  [0.25, '#fdae61'],
+  [0.375, '#fee090'],
+  [0.5, '#ffffbf'],
+  [0.625, '#e0f3f8'],
+  [0.75, '#abd9e9'],
+  [0.875, '#74add1'],
+  [1, '#4575b4']
+];
+const CB_PAIRED = ['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6'];
+
+// Choose scale based on metric: diverging for ECI/strategic index, sequential for everything else
+function getColorScale(metricKey) {
+  if (metricKey === 'economic_complexity_index' || metricKey === 'strategic_index') {
+    return CB_RDYLBU;
+  }
+  return CB_YLGNBU;
+}
 
 // ════════════════════════════════════════════
 //  UTILITIES
@@ -879,7 +895,7 @@ async function loadRegional(level, geoid) {
       mode: 'markers',
       type: 'scatter',
       name: 'RCA (Current Strength)',
-      marker: { color: '#003B63', size: 7, opacity: 0.7 },
+      marker: { color: CB_PAIRED[1], size: 7, opacity: 0.7 },
       hoverinfo: 'text'
     };
     const traceNoRCA = {
@@ -889,7 +905,7 @@ async function loadRegional(level, geoid) {
       mode: 'markers',
       type: 'scatter',
       name: 'No RCA',
-      marker: { color: '#45CFCC', size: 6, opacity: 0.5 },
+      marker: { color: CB_PAIRED[0], size: 6, opacity: 0.5 },
       hoverinfo: 'text'
     };
 
@@ -1009,7 +1025,7 @@ async function renderStateMap(plotEl, geos, metricKey, metricLabel) {
     z: z,
     text: hoverText,
     hoverinfo: 'text',
-    colorscale: RMI_COLORSCALE,
+    colorscale: getColorScale(metricKey),
     colorbar: { title: { text: metricLabel, font: { size: 12 } }, thickness: 15, len: 0.6 },
     marker: { line: { color: 'white', width: 1 } }
   }], {
@@ -1075,7 +1091,7 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
     z: z,
     text: hoverText,
     hoverinfo: 'text',
-    colorscale: RMI_COLORSCALE,
+    colorscale: getColorScale(metricKey),
     colorbar: { title: { text: metricLabel, font: { size: 12 } }, thickness: 15, len: 0.6 },
     marker: { line: { color: 'rgba(255,255,255,0.3)', width: 0.3 } }
   }], {
@@ -1163,7 +1179,7 @@ async function loadNational() {
       Plotly.newPlot(plotEl, [{
         x: vals,
         type: 'histogram',
-        marker: { color: '#45CFCC', line: { color: '#003B63', width: 1 } },
+        marker: { color: CB_PAIRED[1], line: { color: CB_PAIRED[0], width: 1 } },
         nbinsx: 40
       }], {
         xaxis: { title: metricLabel },
@@ -1259,7 +1275,7 @@ async function loadNational() {
       Plotly.newPlot(plotEl, [{
         x: vals,
         type: 'histogram',
-        marker: { color: '#45CFCC', line: { color: '#003B63', width: 1 } },
+        marker: { color: CB_PAIRED[1], line: { color: CB_PAIRED[0], width: 1 } },
         nbinsx: 40
       }], {
         xaxis: { title: metricLabel },
@@ -1373,7 +1389,7 @@ async function loadIndustrySpace() {
 
     let nodeColors, nodeColorbar;
     if (rcaSet) {
-      nodeColors = nodes.map(n => rcaSet.has(String(n.industry_code)) ? '#003B63' : '#cccccc');
+      nodeColors = nodes.map(n => rcaSet.has(String(n.industry_code)) ? CB_PAIRED[1] : '#cccccc');
       nodeColorbar = undefined;
     } else {
       nodeColors = complexities;
@@ -1403,7 +1419,7 @@ async function loadIndustrySpace() {
     if (rcaSet) {
       traces.push({
         x: [null], y: [null], mode: 'markers', type: 'scatter',
-        marker: { size: 10, color: '#003B63' },
+        marker: { size: 10, color: CB_PAIRED[1] },
         name: 'RCA (Strength)', showlegend: true
       });
       traces.push({
@@ -1443,7 +1459,7 @@ async function loadIndustrySpace() {
     Plotly.newPlot(plotEl2, [{
       x: complexities.filter(v => v != null),
       type: 'histogram',
-      marker: { color: '#45CFCC', line: { color: '#003B63', width: 1 } },
+      marker: { color: CB_PAIRED[1], line: { color: CB_PAIRED[0], width: 1 } },
       nbinsx: 40
     }], {
       xaxis: { title: 'Industry Complexity Index' },
