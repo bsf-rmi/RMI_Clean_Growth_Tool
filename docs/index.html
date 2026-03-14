@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>RMI Clean Growth Tool</title>
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
@@ -168,7 +168,9 @@ body {
   background: var(--white);
   border-radius: 8px;
   box-shadow: 0 1px 4px rgba(0,0,0,.08);
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
   margin-bottom: 24px;
 }
 .table-wrap table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -204,17 +206,20 @@ body {
 .map-tooltip {
   position: absolute;
   pointer-events: none;
-  background: rgba(255,255,255,.95);
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 6px 10px;
+  background: rgba(255,255,255,.97);
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  padding: 10px 14px;
   font-size: 13px;
-  line-height: 1.4;
-  box-shadow: 0 2px 6px rgba(0,0,0,.15);
+  line-height: 1.5;
+  box-shadow: 0 4px 16px rgba(0,0,0,.12), 0 1px 3px rgba(0,0,0,.08);
   z-index: 1000;
   display: none;
-  max-width: 260px;
+  max-width: 280px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
+.map-tooltip b { color: var(--blue-spruce); }
 .spinner-overlay {
   display: none;
   position: fixed;
@@ -238,6 +243,34 @@ body {
 .tab-panel { display: none; }
 .tab-panel.active { display: flex; flex: 1; overflow: hidden; }
 
+/* ── Mobile menu button (hidden on desktop) ── */
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--white);
+  font-size: 24px;
+  padding: 8px;
+  cursor: pointer;
+  margin-left: auto;
+}
+/* ── Sidebar toggle for mobile ── */
+.sidebar-toggle {
+  display: none;
+  width: 100%;
+  background: var(--energy);
+  color: var(--blue-spruce);
+  border: none;
+  padding: 10px 16px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
 /* ── Responsive ── */
 @media (max-width: 900px) {
   .sidebar { width: 260px; min-width: 260px; }
@@ -247,6 +280,103 @@ body {
   .main-wrap { flex-direction: column; }
   .sidebar { width: 100%; min-width: 100%; max-height: 260px; border-right: none; border-bottom: 1px solid var(--light-gray); }
   .header-subtitle { display: none; }
+}
+
+/* ── Mobile-specific (iPhone / small touch screens) ── */
+@media (max-width: 600px) {
+  /* Header: compact layout */
+  .header { padding: 0 12px; height: 50px; }
+  .header-title { font-size: 16px; margin-right: 8px; }
+  .header-subtitle { display: none; }
+
+  /* Hamburger menu */
+  .mobile-menu-btn { display: block; }
+  .tab-bar {
+    display: none;
+    position: absolute;
+    top: 50px;
+    left: 0; right: 0;
+    background: var(--blue-spruce);
+    flex-direction: column;
+    padding: 8px 0;
+    z-index: 200;
+    box-shadow: 0 4px 16px rgba(0,0,0,.3);
+  }
+  .tab-bar.open { display: flex; }
+  .tab-btn { padding: 14px 20px; text-align: left; border-bottom: none; }
+  .tab-btn.active { border-bottom: none; border-left: 3px solid var(--energy); }
+
+  /* Sidebar: collapsible drawer */
+  .sidebar {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-height: none;
+    border-right: none;
+    border-bottom: 1px solid var(--light-gray);
+    padding: 12px;
+    overflow-y: visible;
+  }
+  .sidebar.collapsed > *:not(.sidebar-toggle) { display: none; }
+  .sidebar.collapsed { max-height: none; padding: 12px; }
+  .sidebar-toggle { display: block; }
+
+  /* Content area */
+  .content { padding: 12px; }
+  .main-wrap { flex-direction: column; }
+
+  /* Prevent iOS zoom on input focus (needs >= 16px) */
+  .sidebar input, .sidebar select,
+  .search-select-wrap input { font-size: 16px !important; }
+
+  /* Sidebar labels */
+  .sidebar h3 { font-size: 14px; }
+  .sidebar label { font-size: 14px; }
+  .sidebar .hint { font-size: 12px; }
+
+  /* Cards */
+  .cards { flex-direction: column; gap: 8px; }
+  .card { min-width: auto; }
+
+  /* Tables: horizontal scroll */
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  /* Map container */
+  .map-container { padding: 10px; }
+  .map-controls { flex-wrap: wrap; }
+  .map-controls button { padding: 8px 12px; font-size: 13px; min-height: 36px; }
+  .map-controls .zoom-hint { display: none; }
+
+  /* Export bar */
+  .export-bar button { padding: 6px 10px; min-height: 36px; }
+
+  /* Tooltips: slightly smaller on mobile */
+  .map-tooltip { max-width: 220px; font-size: 12px; }
+
+  /* Search dropdown: smaller on mobile */
+  .search-select-list { max-height: 200px; }
+  .search-select-item { padding: 10px 12px; font-size: 14px; min-height: 40px; }
+
+  /* Empty state */
+  .empty-state { padding: 30px 16px; }
+  .empty-state h2 { font-size: 18px; }
+  .empty-state p { font-size: 14px; }
+
+  /* Footer */
+  .site-footer { flex-direction: column; gap: 8px; padding: 10px 12px; text-align: center; }
+  .site-footer img { height: 22px; }
+
+  /* Range slider */
+  .range-label { font-size: 13px; }
+  input[type="range"] { height: 24px; }
+}
+
+/* Touch device: larger tap targets */
+@media (hover: none) and (pointer: coarse) {
+  .search-select-item { padding: 10px 12px; min-height: 44px; }
+  .map-controls button { min-height: 40px; padding: 8px 14px; }
+  .export-bar button { min-height: 36px; padding: 6px 12px; }
+  .tab-btn { padding: 14px 16px; }
+  .sidebar select, .sidebar input { min-height: 40px; }
 }
 
 /* search-select widget */
@@ -360,6 +490,9 @@ body {
 .map-controls button.active { background: var(--energy); color: var(--blue-spruce); border-color: var(--energy-dark); }
 .map-controls .zoom-hint { font-size: 11px; color: #999; align-self: center; margin-left: 4px; }
 
+/* ── County path transitions ── */
+.county-path { transition: fill-opacity 0.2s ease; }
+
 /* ── Footer ── */
 .site-footer {
   background: var(--white);
@@ -390,7 +523,8 @@ body {
   </a>
   <div class="header-title">Clean Growth Tool</div>
   <div class="header-subtitle">Economic Complexity Dashboard</div>
-  <div class="tab-bar">
+  <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle navigation">&#9776;</button>
+  <div class="tab-bar" id="tab-bar">
     <button class="tab-btn" data-tab="regional" role="tab" aria-selected="false">Regional View</button>
     <button class="tab-btn active" data-tab="national" role="tab" aria-selected="true">National View</button>
     <button class="tab-btn" data-tab="industry-space" role="tab" aria-selected="false">Industry Space</button>
@@ -542,9 +676,16 @@ let crosswalk = null;
 
 // Map infrastructure
 let countyGeoJSON = null;        // GeoJSON FeatureCollection for US counties
+let countyTopoJSON = null;       // TopoJSON topology (smaller, used for state mesh extraction)
 let stateFipsToAbbr = null;      // Map: "01" -> "AL"
 let countyToParent = null;       // Map: countyGeoid -> { cbsa: {geoid,name}, csa: {geoid,name}, cz: {geoid,name} }
-const COUNTY_GEOJSON_URL = 'us-counties-2023.json';
+const COUNTY_TOPO_URL = 'us-counties-2023-topo.json';
+const COUNTY_GEOJSON_URL = 'us-counties-2023.json'; // legacy fallback
+
+// Responsive chart height: smaller on mobile
+function chartH(desktopH) {
+  return (window._isMobile && window._isMobile()) ? Math.round(desktopH * 0.6) : desktopH;
+}
 
 const CB_PAIRED = ['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6'];
 
@@ -681,11 +822,29 @@ function fmtInt(v) { return v == null || isNaN(v) ? '—' : Math.round(v).toLoca
 async function fetchGeoJSON() {
   if (countyGeoJSON) return countyGeoJSON;
   performance.mark('geojson-start');
+  // Prefer TopoJSON (1.4MB) over GeoJSON (3.3MB) — ~60% smaller
+  try {
+    const resp = await fetch(BASE + COUNTY_TOPO_URL);
+    if (resp.ok) {
+      countyTopoJSON = await resp.json();
+      const raw = topojson.feature(countyTopoJSON, countyTopoJSON.objects.counties);
+      // Filter to continental US + DC (FIPS ≤ 56)
+      raw.features = raw.features.filter(f => {
+        const fips = parseInt(String(f.id).substring(0, 2), 10);
+        return fips <= 56;
+      });
+      countyGeoJSON = raw;
+      performance.mark('geojson-end');
+      performance.measure('TopoJSON load + convert', 'geojson-start', 'geojson-end');
+      return countyGeoJSON;
+    }
+  } catch (e) { console.warn('TopoJSON load failed, falling back to GeoJSON:', e); }
+  // Fallback to legacy GeoJSON
   const resp = await fetch(BASE + COUNTY_GEOJSON_URL);
   if (!resp.ok) throw new Error('Failed to fetch county GeoJSON');
   countyGeoJSON = await resp.json();
   performance.mark('geojson-end');
-  performance.measure('GeoJSON load', 'geojson-start', 'geojson-end');
+  performance.measure('GeoJSON load (fallback)', 'geojson-start', 'geojson-end');
   return countyGeoJSON;
 }
 
@@ -907,6 +1066,47 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 });
 
 // ════════════════════════════════════════════
+//  MOBILE: hamburger menu + sidebar collapse
+// ════════════════════════════════════════════
+(function initMobile() {
+  const menuBtn = document.getElementById('mobile-menu-btn');
+  const tabBar  = document.getElementById('tab-bar');
+
+  // Hamburger toggle
+  if (menuBtn && tabBar) {
+    menuBtn.addEventListener('click', () => {
+      tabBar.classList.toggle('open');
+    });
+    // Close menu when a tab is clicked
+    tabBar.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => tabBar.classList.remove('open'));
+    });
+  }
+
+  // Sidebar collapse toggles
+  document.querySelectorAll('.sidebar').forEach(sidebar => {
+    const toggle = document.createElement('button');
+    toggle.className = 'sidebar-toggle';
+    toggle.textContent = 'Show Filters';
+    toggle.addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
+      toggle.textContent = sidebar.classList.contains('collapsed') ? 'Show Filters' : 'Hide Filters';
+    });
+    sidebar.insertBefore(toggle, sidebar.firstChild);
+    // Start collapsed on mobile
+    if (window.innerWidth <= 600) {
+      sidebar.classList.add('collapsed');
+    }
+  });
+
+  // Helper to detect mobile
+  function isMobile() { return window.innerWidth <= 600; }
+
+  // Expose for map renderers
+  window._isMobile = isMobile;
+})();
+
+// ════════════════════════════════════════════
 //  TAB 1: REGIONAL VIEW
 // ════════════════════════════════════════════
 let regGeoWidget = null;
@@ -972,7 +1172,8 @@ async function loadRegional(level, geoid) {
 
     // Locator mini-map
     const locatorDiv = document.createElement('div');
-    locatorDiv.style.cssText = 'float:right;margin:0 0 16px 16px;width:280px;';
+    const locW = (window._isMobile && window._isMobile()) ? '100%' : '280px';
+    locatorDiv.style.cssText = 'float:right;margin:0 0 16px 16px;width:' + locW + ';max-width:100%;';
     const locatorMap = document.createElement('div');
     locatorMap.id = 'reg-locator-map';
     locatorDiv.appendChild(locatorMap);
@@ -1088,7 +1289,7 @@ async function loadRegional(level, geoid) {
       yaxis: { title: 'Industry Complexity', zeroline: false },
       images: rmiLogoImages(),
       margin: { t: 30, r: 20, b: 50, l: 60 },
-      height: 450,
+      height: chartH(450),
       legend: { x: 0, y: 1, bgcolor: 'rgba(255,255,255,0.8)' },
       font: { family: 'Source Sans Pro, Roboto, sans-serif' }
     }, { responsive: true });
@@ -1225,6 +1426,36 @@ function buildMapContainer(container, mapId, metricLabel, metricKey, level, getD
   return plotEl;
 }
 
+// Touch-friendly tooltip: on tap, show tooltip; on tap elsewhere, hide it
+function addTouchTooltip(selection, plotEl, tooltip, tipFn) {
+  let activeEl = null;
+  selection.on('touchstart', function(event, d) {
+    event.preventDefault(); // prevent double-fire of mouse events
+    const tip = tipFn(d);
+    if (!tip) return;
+    // Reset previous highlight
+    if (activeEl && activeEl !== this) {
+      d3.select(activeEl).dispatch('mouseleave');
+    }
+    activeEl = this;
+    // Trigger mouseenter to reuse existing highlight logic
+    d3.select(this).dispatch('mouseenter', { detail: event });
+    // Position tooltip at touch point
+    const touch = event.touches ? event.touches[0] : event;
+    const rect = plotEl.getBoundingClientRect();
+    tooltip.style.left = (touch.clientX - rect.left + 14) + 'px';
+    tooltip.style.top = (touch.clientY - rect.top - 50) + 'px';
+  }, { passive: false });
+
+  // Tap on empty area to dismiss
+  d3.select(plotEl).on('touchstart.dismiss', function(event) {
+    if (event.target.tagName !== 'path' && activeEl) {
+      d3.select(activeEl).dispatch('mouseleave');
+      activeEl = null;
+    }
+  });
+}
+
 async function renderStateMap(plotEl, geos, metricKey, metricLabel) {
   // Build state FIPS -> value/name maps
   const stateValMap = new Map();
@@ -1261,12 +1492,14 @@ async function renderStateMap(plotEl, geos, metricKey, metricLabel) {
   const colorInfo = buildContinuousColor(allVals, metricKey);
   const color = colorInfo.scale;
 
-  // Dimensions
+  // Dimensions — on mobile, legend goes below the map
   const width = plotEl.clientWidth || 960;
-  const legendGap = 145;
+  const mobile = window._isMobile && window._isMobile();
+  const legendGap = mobile ? 0 : 145;
   const mapW = width - legendGap;
   const mapH = Math.round(mapW * 0.62);
-  const height = mapH;
+  const legendBelow = mobile ? 50 : 0;
+  const height = mapH + legendBelow;
 
   plotEl.innerHTML = '';
 
@@ -1284,7 +1517,7 @@ async function renderStateMap(plotEl, geos, metricKey, metricLabel) {
   controls.className = 'map-controls';
   const hint = document.createElement('span');
   hint.className = 'zoom-hint';
-  hint.textContent = 'Click a state to explore its Regional View';
+  hint.textContent = mobile ? 'Tap a state to explore' : 'Click a state to explore its Regional View';
   controls.appendChild(hint);
   plotEl.appendChild(controls);
 
@@ -1317,19 +1550,25 @@ async function renderStateMap(plotEl, geos, metricKey, metricLabel) {
     .on('mouseenter', function(event, d) {
       const tip = stateTipByTopoId.get(d.id);
       if (!tip) return;
-      d3.select(this).attr('stroke', '#45CFCC').attr('stroke-width', 2.5).style('fill-opacity', 0.95).raise();
+      d3.select(this).attr('stroke', '#45CFCC').attr('stroke-width', 2.5).style('fill-opacity', 0.92).raise();
+      // Re-draw state mesh on top after raising
+      svg.select('.state-mesh-overlay').raise();
       tooltip.style.display = 'block';
-      tooltip.textContent = '';
+      tooltip.innerHTML = '';
       const val = stateValByTopoId.get(d.id);
-      let pctRank = '';
+      const lines = tip.split('\n');
+      const nameEl = document.createElement('b');
+      nameEl.textContent = lines[0];
+      tooltip.appendChild(nameEl);
+      for (let i = 1; i < lines.length; i++) {
+        tooltip.appendChild(document.createElement('br'));
+        tooltip.appendChild(document.createTextNode(lines[i]));
+      }
       if (val != null) {
         const rank = allVals.filter(v => v <= val).length;
-        pctRank = '\nPercentile: ' + Math.round(100 * rank / allVals.length) + '%';
+        tooltip.appendChild(document.createElement('br'));
+        tooltip.appendChild(document.createTextNode('Percentile: ' + Math.round(100 * rank / allVals.length) + '%'));
       }
-      (tip + pctRank).split('\n').forEach((line, i) => {
-        if (i > 0) tooltip.appendChild(document.createElement('br'));
-        tooltip.appendChild(document.createTextNode(line));
-      });
     })
     .on('mousemove', function(event) {
       const rect = plotEl.getBoundingClientRect();
@@ -1347,9 +1586,17 @@ async function renderStateMap(plotEl, geos, metricKey, metricLabel) {
       }
     });
 
-  // State boundary lines
+  // Touch tooltip support for mobile
+  addTouchTooltip(
+    svg.selectAll('path').filter(d => d && stateTipByTopoId.has(d.id)),
+    plotEl, tooltip,
+    d => stateTipByTopoId.get(d.id)
+  );
+
+  // State boundary lines (mesh overlay — stays on top during hover)
   const stateMesh = topojson.mesh(statesTopo, statesTopo.objects.states, (a, b) => a !== b);
   svg.append('path')
+    .attr('class', 'state-mesh-overlay')
     .datum(stateMesh)
     .attr('d', path)
     .attr('fill', 'none')
@@ -1358,13 +1605,19 @@ async function renderStateMap(plotEl, geos, metricKey, metricLabel) {
     .attr('stroke-linejoin', 'round')
     .style('pointer-events', 'none');
 
-  // Legend — continuous gradient (same approach as county maps)
+  // Legend — on mobile: horizontal below map; on desktop: vertical right side
   const breaks = colorInfo.breaks;
   const nLegendSteps = colorInfo.isBinary ? 2 : 7;
-  const legendX = mapW + 16;
-  const boxH = 18;
-  const totalLegH = nLegendSteps * boxH;
-  const legendY = (height - totalLegH) / 2 - 16;
+  const boxH = mobile ? 14 : 18;
+  let legendX, legendY;
+  if (mobile) {
+    legendX = 0;
+    legendY = mapH + 6;
+  } else {
+    legendX = mapW + 16;
+    const totalLegH = nLegendSteps * boxH;
+    legendY = (height - totalLegH) / 2 - 16;
+  }
   const lg = svg.append('g').attr('transform', 'translate(' + legendX + ',' + legendY + ')');
 
   lg.append('text').attr('x', 0).attr('y', 0)
@@ -1571,12 +1824,14 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
   const colorInfo = buildContinuousColor(allVals, metricKey);
   const color = colorInfo.scale;
 
-  // Dimensions
+  // Dimensions — on mobile, legend goes below
   const width = plotEl.clientWidth || 960;
-  const legendGap = 145;
+  const mobile = window._isMobile && window._isMobile();
+  const legendGap = mobile ? 0 : 145;
   const mapW = width - legendGap;
   const mapH = Math.round(mapW * 0.62);
-  const height = mapH;
+  const legendBelow = mobile ? 50 : 0;
+  const height = mapH + legendBelow;
 
   // Clear previous content
   plotEl.innerHTML = '';
@@ -1599,7 +1854,7 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
   controls.appendChild(resetBtn);
   const hint = document.createElement('span');
   hint.className = 'zoom-hint';
-  hint.textContent = 'Scroll to zoom \u00B7 Drag to pan \u00B7 Click a region to explore';
+  hint.textContent = mobile ? 'Pinch to zoom \u00B7 Tap a region' : 'Scroll to zoom \u00B7 Drag to pan \u00B7 Click a region to explore';
   controls.appendChild(hint);
   plotEl.appendChild(controls);
 
@@ -1630,9 +1885,8 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
     .on('zoom', (event) => {
       mapG.attr('transform', event.transform);
       // Scale strokes inversely so they stay crisp
-      mapG.selectAll('.county-path').attr('stroke-width', 0.4 / event.transform.k);
-      mapG.selectAll('.state-boundary').attr('stroke-width', 1.2 / event.transform.k);
-      mapG.selectAll('.nation-boundary').attr('stroke-width', 1.5 / event.transform.k);
+      mapG.selectAll('.county-path').attr('stroke-width', 0.5 / event.transform.k);
+      mapG.selectAll('.state-boundary').attr('stroke-width', 1.5 / event.transform.k);
       mapG.selectAll('.region-boundary').attr('stroke-width', 2 / event.transform.k);
     })
     .on('start', () => svg.style('cursor', 'grabbing'))
@@ -1653,34 +1907,45 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
       const val = valMap.get(d.id);
       return val != null ? color(val) : '#e8e8e8';
     })
-    .attr('stroke', '#999')
-    .attr('stroke-width', 0.4)
+    .attr('stroke', '#ffffff')
+    .attr('stroke-width', 0.5)
     .style('cursor', d => valMap.has(d.id) ? 'pointer' : 'default')
     .on('mouseenter', function(event, d) {
       const tip = tipMap.get(d.id);
       if (!tip) return;
-      d3.select(this).attr('stroke', '#45CFCC').attr('stroke-width', 2).style('fill-opacity', 0.95).raise();
+      d3.select(this).attr('stroke', '#0f172a').attr('stroke-width', 1.5).style('fill-opacity', 0.92);
+      // Move hovered county to front, then re-raise boundaries
+      this.parentNode.appendChild(this);
+      // Re-draw state boundaries on top after raising county
+      mapG.selectAll('.state-boundary').raise();
       tooltip.style.display = 'block';
-      tooltip.textContent = '';
-      // Add percentile rank
+      tooltip.innerHTML = '';
       const val = valMap.get(d.id);
-      let pctRank = '';
+      const lines = tip.split('\n');
+      // First line = geography name (bold)
+      const nameEl = document.createElement('b');
+      nameEl.textContent = lines[0];
+      tooltip.appendChild(nameEl);
+      // Remaining lines = metric values
+      for (let i = 1; i < lines.length; i++) {
+        tooltip.appendChild(document.createElement('br'));
+        tooltip.appendChild(document.createTextNode(lines[i]));
+      }
+      // Percentile rank
       if (val != null) {
         const rank = allVals.filter(v => v <= val).length;
-        pctRank = '\nPercentile: ' + Math.round(100 * rank / allVals.length) + '%';
+        tooltip.appendChild(document.createElement('br'));
+        const pctEl = document.createTextNode('Percentile: ' + Math.round(100 * rank / allVals.length) + '%');
+        tooltip.appendChild(pctEl);
       }
-      (tip + pctRank).split('\n').forEach((line, i) => {
-        if (i > 0) tooltip.appendChild(document.createElement('br'));
-        tooltip.appendChild(document.createTextNode(line));
-      });
     })
     .on('mousemove', function(event) {
       const rect = plotEl.getBoundingClientRect();
-      tooltip.style.left = (event.clientX - rect.left + 12) + 'px';
-      tooltip.style.top = (event.clientY - rect.top - 10) + 'px';
+      tooltip.style.left = (event.clientX - rect.left + 14) + 'px';
+      tooltip.style.top = (event.clientY - rect.top - 12) + 'px';
     })
     .on('mouseleave', function() {
-      d3.select(this).attr('stroke', '#999').attr('stroke-width', 0.4).style('fill-opacity', 1);
+      d3.select(this).attr('stroke', '#ffffff').attr('stroke-width', 0.5).style('fill-opacity', 1);
       tooltip.style.display = 'none';
     })
     .on('click', function(event, d) {
@@ -1696,28 +1961,43 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
       navigateToRegional(navLevel, navGeoid);
     });
 
-  // Draw state boundaries on top
+  // Touch tooltip support for mobile
+  addTouchTooltip(
+    mapG.selectAll('.county-path').filter(d => tipMap.has(d.id)),
+    plotEl, tooltip,
+    d => tipMap.get(d.id)
+  );
+
+  // Draw state boundaries on top — extracted from counties topology when available
   try {
-    const statesTopo = await fetchStatesTopo();
-    const stateMesh = topojson.mesh(statesTopo, statesTopo.objects.states, (a, b) => a !== b);
-    mapG.append('path')
-      .attr('class', 'state-boundary')
-      .datum(stateMesh)
-      .attr('d', path)
-      .attr('fill', 'none')
-      .attr('stroke', '#333')
-      .attr('stroke-width', 1.2)
-      .attr('stroke-linejoin', 'round')
-      .style('pointer-events', 'none');
-    const nationMesh = topojson.mesh(statesTopo, statesTopo.objects.states, (a, b) => a === b);
-    mapG.append('path')
-      .attr('class', 'nation-boundary')
-      .datum(nationMesh)
-      .attr('d', path)
-      .attr('fill', 'none')
-      .attr('stroke', '#222')
-      .attr('stroke-width', 1.5)
-      .style('pointer-events', 'none');
+    if (countyTopoJSON) {
+      // Extract state boundaries from county topology (same file, no extra fetch)
+      const stateMesh = topojson.mesh(countyTopoJSON, countyTopoJSON.objects.counties, (a, b) => {
+        return String(a.id).substring(0, 2) !== String(b.id).substring(0, 2);
+      });
+      mapG.append('path')
+        .attr('class', 'state-boundary')
+        .datum(stateMesh)
+        .attr('d', path)
+        .attr('fill', 'none')
+        .attr('stroke', '#fff')
+        .attr('stroke-width', 1.5)
+        .attr('stroke-linejoin', 'round')
+        .style('pointer-events', 'none');
+    } else {
+      // Fallback: use separate states TopoJSON
+      const statesTopo = await fetchStatesTopo();
+      const stateMesh = topojson.mesh(statesTopo, statesTopo.objects.states, (a, b) => a !== b);
+      mapG.append('path')
+        .attr('class', 'state-boundary')
+        .datum(stateMesh)
+        .attr('d', path)
+        .attr('fill', 'none')
+        .attr('stroke', '#fff')
+        .attr('stroke-width', 1.5)
+        .attr('stroke-linejoin', 'round')
+        .style('pointer-events', 'none');
+    }
   } catch(e) { /* state boundaries optional */ }
 
   // Draw CBSA/CSA/CZ region boundary overlays
@@ -1768,13 +2048,19 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
     } catch(e) { console.warn('Region boundaries failed:', e); }
   }
 
-  // Legend (fixed, outside zoom group) — continuous gradient
-  const legendX = mapW + 16;
+  // Legend (fixed, outside zoom group) — on mobile: horizontal below map
   const breaks = colorInfo.breaks;
   const nLegendSteps = colorInfo.isBinary ? 2 : 7;
-  const boxH = 18;
-  const totalLegH = nLegendSteps * boxH;
-  const legendY = (height - totalLegH) / 2 - 16;
+  const boxH = mobile ? 14 : 18;
+  let legendX, legendY;
+  if (mobile) {
+    legendX = 0;
+    legendY = mapH + 6;
+  } else {
+    legendX = mapW + 16;
+    const totalLegH = nLegendSteps * boxH;
+    legendY = (height - totalLegH) / 2 - 16;
+  }
   const lg = legendG.append('g').attr('transform', 'translate(' + legendX + ',' + legendY + ')');
 
   lg.append('text')
@@ -1975,7 +2261,7 @@ async function loadNational() {
         yaxis: { title: 'Count' },
         images: rmiLogoImages(),
         margin: { t: 20, r: 20, b: 50, l: 50 },
-        height: 350,
+        height: chartH(350),
         font: { family: 'Source Sans Pro, Roboto, sans-serif' }
       }, { responsive: true });
 
@@ -2100,7 +2386,7 @@ async function loadNational() {
         yaxis: { title: 'Count' },
         images: rmiLogoImages(),
         margin: { t: 20, r: 20, b: 50, l: 50 },
-        height: 350,
+        height: chartH(350),
         font: { family: 'Source Sans Pro, Roboto, sans-serif' }
       }, { responsive: true });
 
@@ -2333,7 +2619,7 @@ async function loadIndustrySpace() {
       yaxis: { showgrid: false, zeroline: false, showticklabels: false, title: '' },
       images: rmiLogoImages(),
       margin: { t: 20, r: 20, b: 20, l: 20 },
-      height: 650,
+      height: chartH(650),
       hovermode: 'closest',
       legend: { x: 0.01, y: 0.99, bgcolor: 'rgba(255,255,255,0.8)' },
       font: { family: 'Source Sans Pro, Roboto, sans-serif' },
@@ -2378,7 +2664,7 @@ async function loadIndustrySpace() {
       yaxis: { title: 'Count' },
       images: rmiLogoImages(),
       margin: { t: 20, r: 20, b: 50, l: 50 },
-      height: 300,
+      height: chartH(300),
       font: { family: 'Source Sans Pro, Roboto, sans-serif' }
     }, { responsive: true });
 
