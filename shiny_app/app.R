@@ -39,7 +39,9 @@ fetch_csv <- function(rel_path) {
     download.file(url, tmp, quiet = TRUE)
     read.csv(tmp, stringsAsFactors = FALSE)
   }, error = function(e) {
-    message("Failed to fetch: ", url, " — ", e$message)
+    warning("Failed to fetch: ", url, " \u2014 ", e$message)
+    showNotification(paste("Failed to load:", rel_path), type = "error",
+                     duration = 8)
     data.frame()
   }, finally = unlink(tmp))
 }
@@ -51,7 +53,9 @@ fetch_csv_gz <- function(rel_path) {
     download.file(url, tmp, mode = "wb", quiet = TRUE)
     read.csv(gzfile(tmp), stringsAsFactors = FALSE)
   }, error = function(e) {
-    message("Failed to fetch: ", url, " — ", e$message)
+    warning("Failed to fetch: ", url, " \u2014 ", e$message)
+    showNotification(paste("Failed to load:", rel_path), type = "error",
+                     duration = 8)
     data.frame()
   }, finally = unlink(tmp))
 }
@@ -164,8 +168,10 @@ MOBILE_CSS <- "
   /* Tables: ensure horizontal scroll */
   .dataTables_wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
-  /* Plotly: touch-friendly */
+  /* Plotly & visNetwork: shrink on mobile */
   .plotly .modebar { display: none !important; }
+  .plotly, .visNetwork { max-height: 60vw !important; }
+  .plotly canvas, .visNetwork canvas { max-height: 60vw !important; }
 
   /* Two-column rows: stack vertically */
   .col-sm-6 { width: 100% !important; flex: 0 0 100% !important; max-width: 100% !important; }
@@ -563,7 +569,7 @@ server <- function(input, output, session) {
     }
     tagList(
       tags$h3(nd$title, style = paste0("color:", RMI_BLUE, ";")),
-      plotlyOutput("nat_map", height = "min(550px, 60vw)"),
+      plotlyOutput("nat_map", height = "550px"),
       uiOutput("nat_cards"),
       fluidRow(
         column(6, DTOutput("nat_table")),
@@ -589,7 +595,7 @@ server <- function(input, output, session) {
     if (level == "state") {
       # Use plotly's built-in US state map (no GeoJSON needed)
       # Need state abbreviations
-      if (!"state_abbr" %in% names(data) && nrow(meta$crosswalk) > 0) {
+      if (!"state_abbreviation" %in% names(data) && nrow(meta$crosswalk) > 0) {
         st_map <- meta$crosswalk %>%
           distinct(state_fips, state_abbreviation)
         data <- data %>%
@@ -797,8 +803,8 @@ server <- function(input, output, session) {
         label = ifelse(nchar(industry_description) > 20,
                        paste0(substr(industry_description, 1, 17), "..."),
                        industry_description),
-        title = paste0("<b>", industry_code, "</b><br>",
-                       industry_description, "<br>",
+        title = paste0("<b>", htmltools::htmlEscape(industry_code), "</b><br>",
+                       htmltools::htmlEscape(industry_description), "<br>",
                        "Complexity: ", sprintf("%.2f", industry_complexity)),
         value = industry_centrality * 1000,
         color = ifelse(id %in% rca_codes, "#1f78b4", "#cccccc"),
@@ -832,7 +838,7 @@ server <- function(input, output, session) {
     tagList(
       tags$h3(paste0("Industry Space", geo_name),
               style = paste0("color:", RMI_BLUE, ";")),
-      visNetworkOutput("is_network", height = "min(550px, 70vw)"),
+      visNetworkOutput("is_network", height = "550px"),
       fluidRow(
         column(6, plotlyOutput("is_hist", height = "280px")),
         column(6, DTOutput("is_table"))
