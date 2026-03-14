@@ -546,78 +546,47 @@ let stateFipsToAbbr = null;      // Map: "01" -> "AL"
 let countyToParent = null;       // Map: countyGeoid -> { cbsa: {geoid,name}, csa: {geoid,name}, cz: {geoid,name} }
 const COUNTY_GEOJSON_URL = 'us-counties-2023.json';
 
-// ColorBrewer palettes
-const CB_YLGNBU = [
-  [0, '#ffffd9'],
-  [0.125, '#edf8b1'],
-  [0.25, '#c7e9b4'],
-  [0.375, '#7fcdbb'],
-  [0.5, '#41b6c4'],
-  [0.625, '#1d91c0'],
-  [0.75, '#225ea8'],
-  [0.875, '#253494'],
-  [1, '#081d58']
-];
-const CB_RDYLBU = [
-  [0, '#d73027'],
-  [0.125, '#f46d43'],
-  [0.25, '#fdae61'],
-  [0.375, '#fee090'],
-  [0.5, '#ffffbf'],
-  [0.625, '#e0f3f8'],
-  [0.75, '#abd9e9'],
-  [0.875, '#74add1'],
-  [1, '#4575b4']
-];
 const CB_PAIRED = ['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6'];
 
-// Use consistent sequential color scale for all metrics
-function getColorScale(metricKey) {
-  const binaryMetrics = ['industry_present', 'industry_comparative_advantage', 'strategic_gain_possible'];
-  if (binaryMetrics.includes(metricKey)) return [[0, '#f0f0f0'], [1, '#2c7bb6']];
-  return CB_YLGNBU;
-}
-
-// Metrics that tend to be heavily right-skewed and benefit from log transform
-const SKEWED_METRICS = new Set(['location_quotient', 'industry_employment_share', 'industrial_diversity']);
-
-// Build a continuous D3 color scale with percentile clipping
+// Build a continuous D3 color scale with quantile-based breaks
+// Uses equal-count (quantile) bins so every color appears on the map
 function buildContinuousColor(allVals, metricKey) {
   const binaryMetrics = ['industry_present', 'industry_comparative_advantage', 'strategic_gain_possible'];
   if (binaryMetrics.includes(metricKey)) {
     return { scale: v => v >= 1 ? '#2c7bb6' : '#e8e8e8', breaks: [0, 1], isBinary: true };
   }
   const sorted = allVals.slice().sort((a, b) => a - b);
-  const p2 = sorted[Math.floor(sorted.length * 0.02)];
-  const p98 = sorted[Math.min(sorted.length - 1, Math.ceil(sorted.length * 0.98))];
-  const lo = p2, hi = p98;
+  if (sorted.length === 0) {
+    return { scale: () => '#7fcdbb', breaks: [0, 1], isBinary: false };
+  }
+  const lo = sorted[0], hi = sorted[sorted.length - 1];
   if (lo === hi) {
     return { scale: () => '#7fcdbb', breaks: [lo, hi], isBinary: false };
   }
-  // Use log scale for skewed metrics (shift to positive domain)
-  let scale;
-  if (SKEWED_METRICS.has(metricKey) && lo > 0) {
-    scale = d3.scaleSequentialLog(d3.interpolateYlGnBu).domain([lo, hi]).clamp(true);
-  } else {
-    scale = d3.scaleSequential(d3.interpolateYlGnBu).domain([lo, hi]).clamp(true);
-  }
-  // Generate legend breaks (7 evenly spaced in the domain)
+  // Build quantile breaks: 7 bins with equal numbers of observations
   const nBreaks = 7;
   const breaks = [];
   for (let i = 0; i <= nBreaks; i++) {
-    breaks.push(lo + (hi - lo) * i / nBreaks);
+    const idx = Math.min(sorted.length - 1, Math.round(sorted.length * i / nBreaks));
+    breaks.push(sorted[idx]);
   }
+  // Quantile scale: maps value → [0, 1] based on rank, then interpolates color
+  const scale = v => {
+    if (v <= breaks[0]) return d3.interpolateYlGnBu(0);
+    if (v >= breaks[nBreaks]) return d3.interpolateYlGnBu(1);
+    for (let i = 0; i < nBreaks; i++) {
+      if (v <= breaks[i + 1]) {
+        // Interpolate within this bin
+        const binLo = breaks[i], binHi = breaks[i + 1];
+        const t = binHi === binLo ? 0.5 : (v - binLo) / (binHi - binLo);
+        const colorLo = i / nBreaks;
+        const colorHi = (i + 1) / nBreaks;
+        return d3.interpolateYlGnBu(colorLo + t * (colorHi - colorLo));
+      }
+    }
+    return d3.interpolateYlGnBu(1);
+  };
   return { scale, breaks, isBinary: false };
-}
-
-// Compute percentile-based zmin/zmax to prevent outlier compression
-function percentileClip(values, lo, hi) {
-  if (!values.length) return { zmin: 0, zmax: 1 };
-  const sorted = values.slice().sort((a, b) => a - b);
-  const pLo = sorted[Math.floor(sorted.length * lo)];
-  const pHi = sorted[Math.min(sorted.length - 1, Math.ceil(sorted.length * hi))];
-  if (pLo === pHi) return { zmin: sorted[0], zmax: sorted[sorted.length - 1] };
-  return { zmin: pLo, zmax: pHi };
 }
 
 // ── RMI logo overlay for Plotly layouts ──
@@ -1159,7 +1128,11 @@ async function initNational() {
   updateNatStateFilter();
   // Pre-select 335910 (Battery Manufacturing) and auto-load
   if (natIndWidget) natIndWidget.setValue('335910', '335910 - ' + (industryTitles.get('335910') || 'Battery Manufacturing'));
-  await loadNational();
+  // Skip auto-load if a hash route is present (applyHash will handle it)
+  const hash = window.location.hash;
+  if (!hash || !hash.startsWith('#/')) {
+    await loadNational();
+  }
 }
 
 function populateNatIndustryList() {
@@ -1263,7 +1236,10 @@ async function renderStateMap(plotEl, geos, metricKey, metricLabel) {
     stateTipMap.set(fips, (g.name || fips) + '\n' + metricLabel + ': ' + fmt(g[metricKey]));
   });
 
-  if (stateValMap.size === 0) return;
+  if (stateValMap.size === 0) {
+    plotEl.innerHTML = '<div style="padding:40px;text-align:center;color:#666;font-style:italic;">No geographic data available for this selection.</div>';
+    return;
+  }
 
   // Load state TopoJSON for rendering
   const statesTopo = await fetchStatesTopo();
@@ -1544,7 +1520,14 @@ async function renderLocatorMap(el, level, geoid) {
 let _lastCountyMap = null;
 
 async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, parentGeoMap) {
-  const geojson = await fetchGeoJSON();
+  let geojson;
+  try {
+    geojson = await fetchGeoJSON();
+  } catch (e) {
+    plotEl.innerHTML = '<div style="padding:40px;text-align:center;color:#c00;">Failed to load county boundaries. Please reload the page.</div>';
+    console.error('GeoJSON fetch failed:', e);
+    return;
+  }
 
   // Build per-county value + hover text maps, and track parent region IDs
   const valMap = new Map();   // fips -> numeric value
@@ -1578,7 +1561,10 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
     });
   }
 
-  if (valMap.size === 0) return;
+  if (valMap.size === 0) {
+    plotEl.innerHTML = '<div style="padding:40px;text-align:center;color:#666;font-style:italic;">No geographic data available for this selection.</div>';
+    return;
+  }
 
   // Continuous color scale with percentile clipping
   const allVals = Array.from(valMap.values());
@@ -1644,7 +1630,7 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
     .on('zoom', (event) => {
       mapG.attr('transform', event.transform);
       // Scale strokes inversely so they stay crisp
-      mapG.selectAll('.county-path').attr('stroke-width', 0.3 / event.transform.k);
+      mapG.selectAll('.county-path').attr('stroke-width', 0.4 / event.transform.k);
       mapG.selectAll('.state-boundary').attr('stroke-width', 1.2 / event.transform.k);
       mapG.selectAll('.nation-boundary').attr('stroke-width', 1.5 / event.transform.k);
       mapG.selectAll('.region-boundary').attr('stroke-width', 2 / event.transform.k);
@@ -1667,8 +1653,8 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
       const val = valMap.get(d.id);
       return val != null ? color(val) : '#e8e8e8';
     })
-    .attr('stroke', '#bcc')
-    .attr('stroke-width', 0.3)
+    .attr('stroke', '#999')
+    .attr('stroke-width', 0.4)
     .style('cursor', d => valMap.has(d.id) ? 'pointer' : 'default')
     .on('mouseenter', function(event, d) {
       const tip = tipMap.get(d.id);
@@ -1694,7 +1680,7 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
       tooltip.style.top = (event.clientY - rect.top - 10) + 'px';
     })
     .on('mouseleave', function() {
-      d3.select(this).attr('stroke', '#bcc').attr('stroke-width', 0.3).style('fill-opacity', 1);
+      d3.select(this).attr('stroke', '#999').attr('stroke-width', 0.4).style('fill-opacity', 1);
       tooltip.style.display = 'none';
     })
     .on('click', function(event, d) {
@@ -2514,6 +2500,8 @@ loadIndustrySpace = async function() {
 // ════════════════════════════════════════════
 (async function init() {
   showSpinner();
+  // Pre-fetch GeoJSON in parallel with other init work
+  fetchGeoJSON().catch(e => console.warn('GeoJSON prefetch failed:', e));
   try { await initRegional(); } catch (err) { console.error('Regional init failed:', err); }
   try { await initNational(); } catch (err) { console.error('National init failed:', err); }
   try { await initIndustrySpace(); } catch (err) { console.error('Industry Space init failed:', err); }
