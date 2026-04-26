@@ -1262,10 +1262,14 @@ async function renderStateMap(plotEl, geos, metricKey, metricLabel) {
   const fiveColors = [cs[0][1], cs[2][1], cs[4][1], cs[6][1], cs[8][1]];
   const color = d3.scaleQuantile().domain(allVals).range(fiveColors);
 
-  // Dimensions
-  const width = plotEl.clientWidth || 960;
-  const legendGap = 160;
-  const mapW = width - legendGap;
+  // Dimensions — clientWidth is 0 if the host hasn't been laid out yet
+  // (initial paint, hidden tab); wait one frame so the flexbox parent settles.
+  if (!plotEl.clientWidth) {
+    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+  }
+  const width = Math.max(plotEl.clientWidth || 960, 320);
+  const legendGap = width >= 600 ? 160 : 0;
+  const mapW = Math.max(width - legendGap, 280);
   const mapH = Math.round(mapW * 0.62);
   const height = mapH;
 
@@ -1545,10 +1549,14 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
   const fiveColors = [cs[0][1], cs[2][1], cs[4][1], cs[6][1], cs[8][1]];
   const color = d3.scaleQuantile().domain(allVals).range(fiveColors);
 
-  // Dimensions
-  const width = plotEl.clientWidth || 960;
-  const legendGap = 160;
-  const mapW = width - legendGap;
+  // Dimensions — clientWidth is 0 if the host hasn't been laid out yet
+  // (initial paint, hidden tab); wait one frame so the flexbox parent settles.
+  if (!plotEl.clientWidth) {
+    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+  }
+  const width = Math.max(plotEl.clientWidth || 960, 320);
+  const legendGap = width >= 600 ? 160 : 0;
+  const mapW = Math.max(width - legendGap, 280);
   const mapH = Math.round(mapW * 0.62);
   const height = mapH;
 
