@@ -24,6 +24,52 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS = os.path.join(ROOT, "docs")
 
 
+def _normalize_ring_antimeridian(ring):
+    """If a ring spans the antimeridian, shift positive lons by -360 so the
+    ring stays contiguous in negative-longitude space (matches us-atlas)."""
+    lons = [pt[0] for pt in ring]
+    if max(lons) - min(lons) <= 180:
+        return ring
+    return [[lon - 360 if lon > 0 else lon, lat, *rest] for lon, lat, *rest in ring]
+
+
+def _normalize_geometry_antimeridian(geom):
+    t = geom["type"]
+    if t == "Polygon":
+        geom = {**geom, "coordinates": [_normalize_ring_antimeridian(r) for r in geom["coordinates"]]}
+    elif t == "MultiPolygon":
+        new_polys = []
+        for poly in geom["coordinates"]:
+            # treat the whole polygon as one unit: if the union of its rings spans the
+            # antimeridian, shift every ring whose own min_lon is positive.
+            all_lons = [pt[0] for ring in poly for pt in ring]
+            if all_lons and (max(all_lons) - min(all_lons)) > 180:
+                new_polys.append([
+                    [[lon - 360 if lon > 0 else lon, lat, *rest] for lon, lat, *rest in ring]
+                    for ring in poly
+                ])
+            else:
+                new_polys.append(poly)
+        # Also handle the case where individual sub-polygons sit on opposite sides
+        # of the antimeridian (the Aleutians case): if the bbox of the whole
+        # MultiPolygon spans >180, shift any sub-polygon whose min_lon is positive.
+        bbox_lons = [pt[0] for poly in new_polys for ring in poly for pt in ring]
+        if bbox_lons and (max(bbox_lons) - min(bbox_lons)) > 180:
+            shifted = []
+            for poly in new_polys:
+                poly_lons = [pt[0] for ring in poly for pt in ring]
+                if min(poly_lons) > 0:
+                    shifted.append([
+                        [[lon - 360, lat, *rest] for lon, lat, *rest in ring]
+                        for ring in poly
+                    ])
+                else:
+                    shifted.append(poly)
+            new_polys = shifted
+        geom = {**geom, "coordinates": new_polys}
+    return geom
+
+
 def build_counties():
     src = os.path.join(ROOT, "county_web.geojson.gz")
     with gzip.open(src, "rt") as f:
@@ -44,7 +90,7 @@ def build_counties():
                 "type": "Feature",
                 "id": fid,
                 "properties": {"county_geoid": fid},
-                "geometry": feat["geometry"],
+                "geometry": _normalize_geometry_antimeridian(feat["geometry"]),
             }
         )
 
@@ -95,7 +141,7 @@ def build_states():
                     "state_name": props.get("state_name"),
                     "state_abbreviation": props.get("state_abbreviation"),
                 },
-                "geometry": mapping(geom_wgs),
+                "geometry": _normalize_geometry_antimeridian(mapping(geom_wgs)),
             }
         )
 
