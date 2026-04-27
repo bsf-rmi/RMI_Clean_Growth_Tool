@@ -1,0 +1,53 @@
+energy_tech_category,energy_tech_subcategory,energy_tech_id
+Aluminum,supply chain,Aluminum | supply chain
+Battery and energy storage,deployment,Battery and energy storage | deployment
+Battery and energy storage,supply chain,Battery and energy storage | supply chain
+Building HVAC,deployment,Building HVAC | deployment
+Building HVAC,supply chain,Building HVAC | supply chain
+Building electrification and energy efficiency,supply chain,Building electrification and energy efficiency | supply chain
+Building envelope,deployment,Building envelope | deployment
+Building envelope,supply chain,Building envelope | supply chain
+Cement,supply chain,Cement | supply chain
+Chemical recycling,supply chain,Chemical recycling | supply chain
+Climate monitoring and verification hardware,supply chain,Climate monitoring and verification hardware | supply chain
+Critical minerals extraction,supply chain,Critical minerals extraction | supply chain
+Critical minerals processing and refining,supply chain,Critical minerals processing and refining | supply chain
+Data center,deployment,Data center | deployment
+Data center,supply chain,Data center | supply chain
+Electric mobility,deployment,Electric mobility | deployment
+Electric mobility,supply chain,Electric mobility | supply chain
+Engineered carbon management,deployment,Engineered carbon management | deployment
+Engineered carbon management,supply chain,Engineered carbon management | supply chain
+Geothermal,deployment,Geothermal | deployment
+Geothermal,supply chain,Geothermal | supply chain
+Grid hardware,deployment,Grid hardware | deployment
+Grid hardware,supply chain,Grid hardware | supply chain
+Hydrogen production,deployment,Hydrogen production | deployment
+Hydrogen production,supply chain,Hydrogen production | supply chain
+"Hydrogen transport, storage and distribution",deployment,"Hydrogen transport, storage and distribution | deployment"
+"Hydrogen transport, storage and distribution",supply chain,"Hydrogen transport, storage and distribution | supply chain"
+Hydropower,deployment,Hydropower | deployment
+Hydropower,supply chain,Hydropower | supply chain
+Industrial chemicals and bioplastics,supply chain,Industrial chemicals and bioplastics | supply chain
+Industrial process heat and industrial heat pumps,supply chain,Industrial process heat and industrial heat pumps | supply chain
+Marine and tidal,deployment,Marine and tidal | deployment
+Marine and tidal,supply chain,Marine and tidal | supply chain
+Nuclear fission,deployment,Nuclear fission | deployment
+Nuclear fission,supply chain,Nuclear fission | supply chain
+Nuclear fusion,supply chain,Nuclear fusion | supply chain
+Other industrial decarbonization,supply chain,Other industrial decarbonization | supply chain
+Quantum computing infrastructure,supply chain,Quantum computing infrastructure | supply chain
+Semiconductor supply chain,supply chain,Semiconductor supply chain | supply chain
+Solar photovoltaic,deployment,Solar photovoltaic | deployment
+Solar photovoltaic,supply chain,Solar photovoltaic | supply chain
+Solar thermal,deployment,Solar thermal | deployment
+Solar thermal,supply chain,Solar thermal | supply chain
+Steel,supply chain,Steel | supply chain
+Synthetic ammonia and methanol,deployment,Synthetic ammonia and methanol | deployment
+Synthetic ammonia and methanol,supply chain,Synthetic ammonia and methanol | supply chain
+Synthetic fuels and biofuels,deployment,Synthetic fuels and biofuels | deployment
+Synthetic fuels and biofuels,supply chain,Synthetic fuels and biofuels | supply chain
+Water and wastewater infrastructure,deployment,Water and wastewater infrastructure | deployment
+Water and wastewater infrastructure,supply chain,Water and wastewater infrastructure | supply chain
+Wind,deployment,Wind | deployment
+Wind,supply chain,Wind | supply chain

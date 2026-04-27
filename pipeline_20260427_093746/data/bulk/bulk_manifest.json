@@ -1,0 +1,78 @@
+{
+  "county_fact": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_093746/pipeline_20260427_093746/data/bulk/county_fact.parquet",
+    "size_mb": 44.87
+  },
+  "state_fact": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_093746/pipeline_20260427_093746/data/bulk/state_fact.parquet",
+    "size_mb": 1.3
+  },
+  "cbsa_fact": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_093746/pipeline_20260427_093746/data/bulk/cbsa_fact.parquet",
+    "size_mb": 15.04
+  },
+  "csa_fact": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_093746/pipeline_20260427_093746/data/bulk/csa_fact.parquet",
+    "size_mb": 3.97
+  },
+  "cz_fact": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_093746/pipeline_20260427_093746/data/bulk/cz_fact.parquet",
+    "size_mb": 10.26
+  },
+  "county_peers": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_093746/pipeline_20260427_093746/data/bulk/county_peers.parquet",
+    "size_mb": 0.26
+  },
+  "cbsa_peers": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_093746/pipeline_20260427_093746/data/bulk/cbsa_peers.parquet",
+    "size_mb": 0.11
+  },
+  "csa_peers": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_093746/pipeline_20260427_093746/data/bulk/csa_peers.parquet",
+    "size_mb": 0.03
+  },
+  "cz_peers": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_093746/pipeline_20260427_093746/data/bulk/cz_peers.parquet",
+    "size_mb": 0.07
+  },
+  "county_colocation": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_093746/pipeline_20260427_093746/data/bulk/county_colocation.parquet",
+    "size_mb": 4.77
+  },
+  "cbsa_colocation": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_093746/pipeline_20260427_093746/data/bulk/cbsa_colocation.parquet",
+    "size_mb": 4.19
+  },
+  "csa_colocation": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_093746/pipeline_20260427_093746/data/bulk/csa_colocation.parquet",
+    "size_mb": 3.33
+  },
+  "cz_colocation": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_093746/pipeline_20260427_093746/data/bulk/cz_colocation.parquet",
+    "size_mb": 3.95
+  },
+  "energy_tech_crosswalk": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_093746/pipeline_20260427_093746/data/bulk/energy_tech_crosswalk.parquet",
+    "size_mb": 0.01
+  },
+  "energy_tech_metrics_county": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_093746/pipeline_20260427_093746/data/bulk/energy_tech_metrics_county.parquet",
+    "size_mb": 5.1
+  },
+  "energy_tech_metrics_state": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_093746/pipeline_20260427_093746/data/bulk/energy_tech_metrics_state.parquet",
+    "size_mb": 0.1
+  },
+  "energy_tech_metrics_cbsa": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_093746/pipeline_20260427_093746/data/bulk/energy_tech_metrics_cbsa.parquet",
+    "size_mb": 1.65
+  },
+  "energy_tech_metrics_csa": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_093746/pipeline_20260427_093746/data/bulk/energy_tech_metrics_csa.parquet",
+    "size_mb": 0.34
+  },
+  "energy_tech_metrics_cz": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_093746/pipeline_20260427_093746/data/bulk/energy_tech_metrics_cz.parquet",
+    "size_mb": 1.05
+  }
+}
