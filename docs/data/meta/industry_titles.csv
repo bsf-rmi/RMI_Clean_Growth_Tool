@@ -1,0 +1,948 @@
+"industry_code","industry_description","industry_employment_share_nation"
+"111000","Crop Production",0.00507595938158635
+"112000","Animal Production",0.00265160687353591
+"113110","Timber Tract Operations",2.52976512467405e-05
+"113210","Forest Nurseries and Gathering of Forest Products",1.70371936967844e-05
+"113310","Logging",0.000357000913308311
+"114111","Finfish Fishing",6.95656727141094e-05
+"114112","Shellfish Fishing",6.79996276369302e-05
+"114119","Other Marine Fishing",9.52247189786605e-06
+"114210","Hunting and Trapping",3.84857011823996e-05
+"115111","Cotton Ginning",3.50151617256472e-05
+"115112","Soil Preparation, Planting, and Cultivating",0.000198233771912384
+"115113","Crop Harvesting, Primarily by Machine",6.93591612753605e-05
+"115114","Postharvest Crop Activities (except Cotton Ginning)",0.000493057532870712
+"115115","Farm Labor Contractors and Crew Leaders",0.00196368858891904
+"115116","Farm Management Services",0.000132534452245962
+"115210","Support Activities for Animal Production",0.000251450622392205
+"115310","Support Activities for Forestry",0.000144282658539233
+"211120","Crude Petroleum Extraction",0.000485347772490754
+"211130","Natural Gas Extraction",0.000218982435077794
+"212114","Surface Coal Mining",0.000105544554487251
+"212115","Underground Coal Mining",0.000133067940129397
+"212210","Iron Ore Mining",3.04661736443172e-05
+"212220","Gold Ore and Silver Ore Mining",9.45191382296018e-05
+"212230","Copper, Nickel, Lead, and Zinc Mining",0.000115497258549178
+"212290","Other Metal Ore Mining",2.75291220709995e-05
+"212311","Dimension Stone Mining and Quarrying",4.49334472144487e-05
+"212312","Crushed and Broken Limestone Mining and Quarrying",0.000138311036102077
+"212313","Crushed and Broken Granite Mining and Quarrying",3.6816400385846e-05
+"212319","Other Crushed and Broken Stone Mining and Quarrying",4.77328244952671e-05
+"212321","Construction Sand and Gravel Mining",0.000193145559518765
+"212322","Industrial Sand Mining",5.17540611220166e-05
+"212323","Kaolin, Clay, and Ceramic and Refractory Minerals Mining",3.63460132198068e-05
+"212390","Other Nonmetallic Mineral Mining and Quarrying",7.25314064316978e-05
+"213111","Drilling Oil and Gas Wells",0.000258512166311647
+"213112","Support Activities for Oil and Gas Operations",0.00129184377795147
+"213113","Support Activities for Coal Mining",2.88198185631801e-05
+"213114","Support Activities for Metal Mining",2.85215242627651e-05
+"213115","Support Activities for Nonmetallic Minerals (except Fuels) Mining",1.93030830941682e-05
+"221111","Hydroelectric Power Generation",4.76639873490175e-05
+"221112","Fossil Fuel Electric Power Generation",0.000427375422490853
+"221113","Nuclear Electric Power Generation",0.0002133033705122
+"221114","Solar Electric Power Generation",9.6171229739593e-05
+"221115","Wind Electric Power Generation",6.69670704431857e-05
+"221116","Geothermal Electric Power Generation",6.20681602017534e-06
+"221117","Biomass Electric Power Generation",1.40944056946126e-05
+"221118","Other Electric Power Generation",2.84240049722447e-05
+"221121","Electric Bulk Power Transmission and Control",0.000166494111062448
+"221122","Electric Power Distribution",0.00132264266446932
+"221210","Natural Gas Distribution",0.000679021083464099
+"221310","Water Supply and Irrigation Systems",0.000320253350068714
+"221320","Sewage Treatment Facilities",4.45605793389298e-05
+"221330","Steam and Air-Conditioning Supply",8.8799918662028e-06
+"236115","New Single-Family Housing Construction (except For-Sale Builders)",0.00313584751525781
+"236116","New Multifamily Housing Construction (except For-Sale Builders)",0.000314522657643432
+"236117","New Housing For-Sale Builders",0.000564883358553352
+"236118","Residential Remodelers",0.00453924762513566
+"236210","Industrial Building Construction",0.000985214446411326
+"236220","Commercial and Institutional Building Construction",0.00471610746313754
+"237110","Water and Sewer Line and Related Structures Construction",0.00127632100147217
+"237120","Oil and Gas Pipeline and Related Structures Construction",0.000851027902655372
+"237130","Power and Communication Line and Related Structures Construction",0.00142827326538939
+"237210","Land Subdivision",0.000245111868508385
+"237310","Highway, Street, and Bridge Construction",0.00222850509054138
+"237990","Other Heavy and Civil Engineering Construction",0.000857567431549088
+"238110","Poured Concrete Foundation and Structure Contractors",0.00171979857975659
+"238120","Structural Steel and Precast Concrete Contractors",0.000544708338273355
+"238130","Framing Contractors",0.00063332469121205
+"238140","Masonry Contractors",0.00104144865846842
+"238150","Glass and Glazing Contractors",0.000497130397357149
+"238160","Roofing Contractors",0.00170564680977343
+"238170","Siding Contractors",0.000349664020803871
+"238190","Other Foundation, Structure, and Building Exterior Contractors",0.000377066941440079
+"238210","Electrical Contractors and Other Wiring Installation Contractors",0.0069573474257351
+"238220","Plumbing, Heating, and Air-Conditioning Contractors",0.00818295839613671
+"238290","Other Building Equipment Contractors",0.00101962154667843
+"238310","Drywall and Insulation Contractors",0.00179557106849087
+"238320","Painting and Wall Covering Contractors",0.00191428072719837
+"238330","Flooring Contractors",0.000804235852492183
+"238340","Tile and Terrazzo Contractors",0.000504811475592838
+"238350","Finish Carpentry Contractors",0.00153845285439078
+"238390","Other Building Finishing Contractors",0.000641401583038674
+"238910","Site Preparation Contractors",0.00335949366699402
+"238990","All Other Specialty Trade Contractors",0.00334239337257984
+"311111","Dog and Cat Food Manufacturing",0.000222567703111629
+"311119","Other Animal Food Manufacturing",0.000217433599287178
+"311211","Flour Milling",8.62644171084998e-05
+"311212","Rice Milling",3.08677236641068e-05
+"311213","Malt Manufacturing",6.96976105777545e-06
+"311221","Wet Corn Milling and Starch Manufacturing",7.80785331336475e-05
+"311224","Soybean and Other Oilseed Processing",5.8385372877398e-05
+"311225","Fats and Oils Refining and Blending",5.19376268453489e-05
+"311230","Breakfast Cereal Manufacturing",7.60535737481374e-05
+"311313","Beet Sugar Manufacturing",3.93977933702073e-05
+"311314","Cane Sugar Manufacturing",3.83078718879214e-05
+"311340","Nonchocolate Confectionery Manufacturing",0.000155571950524173
+"311351","Chocolate and Confectionery Manufacturing from Cacao Beans",6.02956036858253e-05
+"311352","Confectionery Manufacturing from Purchased Chocolate",0.000187713161393898
+"311411","Frozen Fruit, Juice, and Vegetable Manufacturing",0.000174289917875219
+"311412","Frozen Specialty Food Manufacturing",0.000373189115534683
+"311421","Fruit and Vegetable Canning",0.000322043115871205
+"311422","Specialty Canning",6.89977662575499e-05
+"311423","Dried and Dehydrated Food Manufacturing",7.67706273549044e-05
+"311511","Fluid Milk Manufacturing",0.00032791721901784
+"311512","Creamery Butter Manufacturing",2.20106775133205e-05
+"311513","Cheese Manufacturing",0.000360121530604961
+"311514","Dry, Condensed, and Evaporated Dairy Product Manufacturing",0.000116891210760733
+"311520","Ice Cream and Frozen Dessert Manufacturing",0.000150604203136491
+"311611","Animal (except Poultry) Slaughtering",0.000872241216557968
+"311612","Meat Processed from Carcasses",0.000886633916552995
+"311613","Rendering and Meat Byproduct Processing",4.8065537368807e-05
+"311615","Poultry Processing",0.00142513543880617
+"311710","Seafood Product Preparation and Packaging",0.000187128045650776
+"311811","Retail Bakeries",0.000737544130633996
+"311812","Commercial Bakeries",0.000892008950389321
+"311813","Frozen Cakes, Pies, and Other Pastries Manufacturing",8.12737240054013e-05
+"311821","Cookie and Cracker Manufacturing",0.000225344134677031
+"311824","Dry Pasta, Dough, and Flour Mixes Manufacturing from Purchased Flour",0.000127767479868175
+"311830","Tortilla Manufacturing",0.000125719574767248
+"311911","Roasted Nuts and Peanut Butter Manufacturing",9.64408418957374e-05
+"311919","Other Snack Food Manufacturing",0.000285708575509106
+"311920","Coffee and Tea Manufacturing",0.000168048683281919
+"311930","Flavoring Syrup and Concentrate Manufacturing",5.8006768573025e-05
+"311941","Mayonnaise, Dressing, and Other Prepared Sauce Manufacturing",0.000123212755357991
+"311942","Spice and Extract Manufacturing",0.000168823101177228
+"311991","Perishable Prepared Food Manufacturing",0.000403477459884522
+"311999","All Other Miscellaneous Food Manufacturing",0.000252672481738136
+"312111","Soft Drink Manufacturing",0.000473519256193525
+"312112","Bottled Water Manufacturing",0.000126746395532139
+"312113","Ice Manufacturing",4.60061594101721e-05
+"312120","Breweries",0.000640816467295552
+"312130","Wineries",0.000460841748425884
+"312140","Distilleries",0.000158617994245719
+"312230","Tobacco Manufacturing",6.20853694883158e-05
+"313110","Fiber, Yarn, and Thread Mills",0.000122639112472577
+"313210","Broadwoven Fabric Mills",0.000114143461339602
+"313220","Narrow Fabric Mills and Schiffli Machine Embroidery",3.22043115871205e-05
+"313230","Nonwoven Fabric Mills",8.97062744209815e-05
+"313240","Knit Fabric Mills",2.56418369779887e-05
+"313310","Textile and Fabric Finishing Mills",0.000100186729937488
+"313320","Fabric Coating Mills",3.67590360973046e-05
+"314110","Carpet and Rug Mills",0.000153495363278976
+"314120","Curtain and Linen Mills",8.75608500295346e-05
+"314910","Textile Bag and Canvas Mills",0.000141425916969873
+"314994","Rope, Cordage, Twine, Tire Cord, and Tire Fabric Mills",2.96802828913006e-05
+"314999","All Other Miscellaneous Textile Product Mills",0.000190621530822945
+"315120","Apparel Knitting Mills",3.75449268503213e-05
+"315210","Cut and Sew Apparel Contractors",0.000156432414852293
+"315250","Cut and Sew Apparel Manufacturing (except Contractors)",0.000278090597990813
+"315990","Apparel Accessories and Other Apparel Manufacturing",8.37690705569506e-05
+"316110","Leather and Hide Tanning and Finishing",2.2957188274253e-05
+"316210","Footwear Manufacturing",7.42351258013762e-05
+"316990","Other Leather and Allied Product Manufacturing",7.6076519463554e-05
+"321113","Sawmills",0.000469985616019377
+"321114","Wood Preservation",6.63590089846473e-05
+"321211","Hardwood Veneer and Plywood Manufacturing",7.49177608350184e-05
+"321212","Softwood Veneer and Plywood Manufacturing",8.52261234859012e-05
+"321215","Engineered Wood Member Manufacturing",0.000229204751295865
+"321219","Reconstituted Wood Product Manufacturing",8.214566119123e-05
+"321911","Wood Window and Door Manufacturing",0.000331232874895531
+"321912","Cut Stock, Resawing Lumber, and Planing",7.64551237679269e-05
+"321918","Other Millwork (including Flooring)",0.000210762132529817
+"321920","Wood Container and Pallet Manufacturing",0.000399381649682669
+"321991","Manufactured Home (Mobile Home) Manufacturing",0.000178729913808321
+"321992","Prefabricated Wood Building Manufacturing",0.000109043776088275
+"321999","All Other Miscellaneous Wood Product Manufacturing",0.000203115472867254
+"322110","Pulp Mills",2.62384255788189e-05
+"322120","Paper Mills",0.000289534773554815
+"322130","Paperboard Mills",0.000188808819305038
+"322211","Corrugated and Solid Fiber Box Manufacturing",0.000608095877111559
+"322212","Folding Paperboard Box Manufacturing",0.000166448219631615
+"322219","Other Paperboard Container Manufacturing",0.000150185443830139
+"322220","Paper Bag and Coated and Treated Paper Manufacturing",0.000313386844730313
+"322230","Stationery Product Manufacturing",7.5950318028763e-05
+"322291","Sanitary Paper Product Manufacturing",0.000165128840995164
+"322299","All Other Converted Paper Product Manufacturing",0.000102819750781537
+"323111","Commercial Printing (except Screen and Books)",0.00151734279620756
+"323113","Commercial Screen Printing",0.000460858957712446
+"323117","Books Printing",7.55545044378276e-05
+"323120","Support Activities for Printing",9.54771218482425e-05
+"324110","Petroleum Refineries",0.000371921364757919
+"324121","Asphalt Paving Mixture and Block Manufacturing",0.000102722231491016
+"324122","Asphalt Shingle and Coating Materials Manufacturing",7.89045788886431e-05
+"324191","Petroleum Lubricating Oil and Grease Manufacturing",6.38349802888274e-05
+"324199","All Other Petroleum and Coal Products Manufacturing",2.66916034582956e-05
+"325110","Petrochemical Manufacturing",0.000151223737452738
+"325120","Industrial Gas Manufacturing",0.000126786550534118
+"325130","Synthetic Dye and Pigment Manufacturing",5.58269256084533e-05
+"325180","Other Basic Inorganic Chemical Manufacturing",0.000239415594656227
+"325193","Ethyl Alcohol Manufacturing",6.14256801700902e-05
+"325194","Cyclic Crude, Intermediate, and Gum and Wood Chemical Manufacturing",1.85573473431305e-05
+"325199","All Other Basic Organic Chemical Manufacturing",0.000242111716217671
+"325211","Plastics Material and Resin Manufacturing",0.000357287734751018
+"325212","Synthetic Rubber Manufacturing",5.46566941222095e-05
+"325220","Artificial and Synthetic Fibers and Filaments Manufacturing",0.000139372275440093
+"325311","Nitrogenous Fertilizer Manufacturing",5.17483246931624e-05
+"325312","Phosphatic Fertilizer Manufacturing",3.36785738026335e-05
+"325314","Fertilizer (Mixing Only) Manufacturing",4.33501928507071e-05
+"325315","Compost Manufacturing",7.0730167771499e-06
+"325320","Pesticide and Other Agricultural Chemical Manufacturing",8.15662818769623e-05
+"325411","Medicinal and Botanical Manufacturing",0.00026058301712799
+"325412","Pharmaceutical Preparation Manufacturing",0.00133259536853125
+"325413","In-Vitro Diagnostic Substance Manufacturing",0.000163144036611633
+"325414","Biological Product (except Diagnostic) Manufacturing",0.000267782235339931
+"325510","Paint and Coating Manufacturing",0.000246741014302959
+"325520","Adhesive Manufacturing",0.000138437237536868
+"325611","Soap and Other Detergent Manufacturing",0.000166620312497239
+"325612","Polish and Other Sanitation Good Manufacturing",0.000152021101063463
+"325613","Surface Active Agent Manufacturing",2.7466021353604e-05
+"325620","Toilet Preparation Manufacturing",0.000328370396897317
+"325910","Printing Ink Manufacturing",4.37746885859132e-05
+"325920","Explosives Manufacturing",4.08548462991578e-05
+"325991","Custom Compounding of Purchased Resins",9.91484363148896e-05
+"325992","Photographic Film, Paper, Plate, Chemical, and Copy Toner Manufacturing",3.52102003066878e-05
+"325998","All Other Miscellaneous Chemical Product and Preparation Manufacturing",0.000249551864441486
+"326111","Plastics Bag and Pouch Manufacturing",0.000226921652611919
+"326112","Plastics Packaging Film and Sheet (including Laminated) Manufacturing",0.000140760491222793
+"326113","Unlaminated Plastics Film and Sheet (except Packaging) Manufacturing",0.000207584150944626
+"326121","Unlaminated Plastics Profile Shape Manufacturing",0.000128369804897859
+"326122","Plastics Pipe and Pipe Fitting Manufacturing",0.000186445410617134
+"326130","Laminated Plastics Plate, Sheet (except Packaging), and Shape Manufacturing",0.000116547025029485
+"326140","Polystyrene Foam Product Manufacturing",0.00016841007829973
+"326150","Urethane and Other Foam Product (except Polystyrene) Manufacturing",0.000214255617701986
+"326160","Plastics Bottle Manufacturing",0.000200230049153623
+"326191","Plastics Plumbing Fixture Manufacturing",8.64307735452697e-05
+"326199","All Other Plastics Product Manufacturing",0.00172029191263804
+"326211","Tire Manufacturing (except Retreading)",0.000295328566697493
+"326212","Tire Retreading",3.73957797001137e-05
+"326220","Rubber and Plastics Hoses and Belting Manufacturing",0.000132241894374401
+"326291","Rubber Product Manufacturing for Mechanical Use",0.000158256599227909
+"326299","All Other Rubber Product Manufacturing",0.000141833203418517
+"327110","Pottery, Ceramics, and Plumbing Fixture Manufacturing",9.63375861763629e-05
+"327120","Clay Building Material and Refractories Manufacturing",0.000127377402706094
+"327211","Flat Glass Manufacturing",6.74604033246414e-05
+"327212","Other Pressed and Blown Glass and Glassware Manufacturing",6.99672227338989e-05
+"327213","Glass Container Manufacturing",6.49249017711132e-05
+"327215","Glass Product Manufacturing Made of Purchased Glass",0.00027094300763856
+"327310","Cement Manufacturing",8.81287564860941e-05
+"327320","Ready-Mix Concrete Manufacturing",0.0006184845497664
+"327331","Concrete Block and Brick Manufacturing",0.000108521761062548
+"327332","Concrete Pipe Manufacturing",5.7628164268652e-05
+"327390","Other Concrete Product Manufacturing",0.000331083727745324
+"327410","Lime Manufacturing",2.44085047743494e-05
+"327420","Gypsum Product Manufacturing",7.09883070699352e-05
+"327910","Abrasive Product Manufacturing",5.7501962833861e-05
+"327991","Cut Stone and Stone Product Manufacturing",0.000211060426830232
+"327992","Ground or Treated Mineral and Earth Manufacturing",3.94207390856238e-05
+"327993","Mineral Wool Manufacturing",0.000101001302834776
+"327999","All Other Miscellaneous Nonmetallic Mineral Product Manufacturing",7.42293893725221e-05
+"331110","Iron and Steel Mills and Ferroalloy Manufacturing",0.000493384509315398
+"331210","Iron and Steel Pipe and Tube Manufacturing from Purchased Steel",0.000160258612898002
+"331221","Rolled Steel Shape Manufacturing",0.000125926086205997
+"331222","Steel Wire Drawing",5.96990150849952e-05
+"331313","Alumina Refining and Primary Aluminum Production",4.47269357756998e-05
+"331314","Secondary Smelting and Alloying of Aluminum",3.28181094745131e-05
+"331315","Aluminum Sheet, Plate, and Foil Manufacturing",0.000108378350341195
+"331318","Other Aluminum Rolling, Drawing, and Extruding",0.000155554741237611
+"331410","Nonferrous Metal (except Aluminum) Smelting and Refining",4.70903444636039e-05
+"331420","Copper Rolling, Drawing, Extruding, and Alloying",0.000165237833143393
+"331491","Nonferrous Metal (except Copper and Aluminum) Rolling, Drawing, and Extruding",8.91268951067138e-05
+"331492","Secondary Smelting, Refining, and Alloying of Nonferrous Metal (except Copper and Aluminum)",6.0112037962493e-05
+"331511","Iron Foundries",0.000190644476538362
+"331512","Steel Investment Foundries",6.33531202650799e-05
+"331513","Steel Foundries (except Investment)",6.35596317038288e-05
+"331523","Nonferrous Metal Die-Casting Foundries",0.000119604541608739
+"331524","Aluminum Foundries (except Die-Casting)",8.85417793635919e-05
+"331529","Other Nonferrous Metal Foundries (except Die-Casting)",7.61109380366788e-05
+"332111","Iron and Steel Forging",0.000116816637185629
+"332112","Nonferrous Forging",3.95641498069772e-05
+"332114","Custom Roll Forming",3.46595031366908e-05
+"332117","Powder Metallurgy Part Manufacturing",4.69010423114174e-05
+"332119","Metal Crown, Closure, and Other Metal Stamping (except Automotive)",0.000274648740678332
+"332215","Metal Kitchen Cookware, Utensil, Cutlery, and Flatware (except Precious) Manufacturing",5.58039798930367e-05
+"332216","Saw Blade and Handtool Manufacturing",0.00014785645371536
+"332311","Prefabricated Metal Building and Component Manufacturing",0.000219567550820916
+"332312","Fabricated Structural Metal Manufacturing",0.000578054199202448
+"332313","Plate Work Manufacturing",0.000282524857495061
+"332321","Metal Window and Door Manufacturing",0.000392348787907498
+"332322","Sheet Metal Work Manufacturing",0.000671385896659244
+"332323","Ornamental and Architectural Metal Work Manufacturing",0.00026456409875276
+"332410","Power Boiler and Heat Exchanger Manufacturing",0.000130716004299201
+"332420","Metal Tank (Heavy Gauge) Manufacturing",0.000222630803829025
+"332431","Metal Can Manufacturing",0.000124405932559651
+"332439","Other Metal Container Manufacturing",8.41304655747611e-05
+"332510","Hardware Manufacturing",0.000131828871496903
+"332613","Spring Manufacturing",8.90580579604641e-05
+"332618","Other Fabricated Wire Product Manufacturing",0.000139624678309674
+"332710","Machine Shops",0.00153859052868328
+"332721","Precision Turned Product Manufacturing",0.000226674986171191
+"332722","Bolt, Nut, Screw, Rivet, and Washer Manufacturing",0.000206195935161925
+"332811","Metal Heat Treating",0.00010495943874413
+"332812","Metal Coating, Engraving (except Jewelry and Silverware), and Allied Services to Manufacturers",0.000344076739099942
+"332813","Electroplating, Plating, Polishing, Anodizing, and Coloring",0.000306078634370144
+"332911","Industrial Valve Manufacturing",0.000158445901380095
+"332912","Fluid Power Valve and Hose Fitting Manufacturing",0.0002069244616264
+"332913","Plumbing Fixture Fitting and Trim Manufacturing",6.630738112496e-05
+"332919","Other Metal Valve and Pipe Fitting Manufacturing",8.55014720708997e-05
+"332991","Ball and Roller Bearing Manufacturing",0.000115021134954284
+"332992","Small Arms Ammunition Manufacturing",7.00073777358779e-05
+"332993","Ammunition (except Small Arms) Manufacturing",0.000103301610805284
+"332994","Small Arms, Ordnance, and Ordnance Accessories Manufacturing",0.000145366843592665
+"332996","Fabricated Pipe and Pipe Fitting Manufacturing",0.000188246649277333
+"332999","All Other Miscellaneous Fabricated Metal Product Manufacturing",0.000506928217840014
+"333111","Farm Machinery and Equipment Manufacturing",0.000383313912462233
+"333112","Lawn and Garden Tractor and Home Lawn and Garden Equipment Manufacturing",9.23106131207593e-05
+"333120","Construction Machinery Manufacturing",0.000438205800167462
+"333131","Mining Machinery and Equipment Manufacturing",5.56318870274126e-05
+"333132","Oil and Gas Field Machinery and Equipment Manufacturing",0.000271688743389598
+"333241","Food Product Machinery Manufacturing",0.000121348415980397
+"333242","Semiconductor Machinery Manufacturing",0.000167228373955778
+"333243","Sawmill, Woodworking, and Paper Machinery Manufacturing",7.33517157578393e-05
+"333248","All Other Industrial Machinery Manufacturing",0.000408238695833455
+"333310","Commercial and Service Industry Machinery Manufacturing",0.000512945731708003
+"333413","Industrial and Commercial Fan and Blower and Air Purification Equipment Manufacturing",0.000188923547882121
+"333414","Heating Equipment (except Warm Air Furnaces) Manufacturing",8.95628636996281e-05
+"333415","Air-Conditioning and Warm Air Heating Equipment and Commercial and Industrial Refrigeration Equipment Manufacturing",0.000567676999405316
+"333511","Industrial Mold Manufacturing",0.000185206341984641
+"333514","Special Die and Tool, Die Set, Jig, and Fixture Manufacturing",0.000295391667414888
+"333515","Cutting Tool and Machine Tool Accessory Manufacturing",0.000121956477438935
+"333517","Machine Tool Manufacturing",0.000243763807727663
+"333519","Rolling Mill and Other Metalworking Machinery Manufacturing",6.58197846723585e-05
+"333611","Turbine and Turbine Generator Set Units Manufacturing",0.000116088110721154
+"333612","Speed Changer, Industrial High-Speed Drive, and Gear Manufacturing",6.48847467691343e-05
+"333613","Mechanical Power Transmission Equipment Manufacturing",7.64207051948021e-05
+"333618","Other Engine Equipment Manufacturing",0.000278130752992792
+"333912","Air and Gas Compressor Manufacturing",0.000113959895616269
+"333914","Measuring, Dispensing, and Other Pumping Equipment Manufacturing",0.000160981402933623
+"333921","Elevator and Moving Stairway Manufacturing",6.66802490004789e-05
+"333922","Conveyor and Conveying Equipment Manufacturing",0.00021204135616429
+"333923","Overhead Traveling Crane, Hoist, and Monorail System Manufacturing",9.124363735389e-05
+"333924","Industrial Truck, Tractor, Trailer, and Stacker Machinery Manufacturing",0.000189107113605453
+"333991","Power-Driven Handtool Manufacturing",5.92917286363515e-05
+"333992","Welding and Soldering Equipment Manufacturing",9.16050323717006e-05
+"333993","Packaging Machinery Manufacturing",0.000140611344072586
+"333994","Industrial Process Furnace and Oven Manufacturing",5.7077467098655e-05
+"333995","Fluid Power Cylinder and Actuator Manufacturing",9.16509238025337e-05
+"333996","Fluid Power Pump and Motor Manufacturing",0.000106032150939853
+"333998","All Other Miscellaneous General Purpose Machinery Manufacturing",0.00027894532589008
+"334111","Electronic Computer Manufacturing",0.000356019983974253
+"334112","Computer Storage Device Manufacturing",7.95470589203063e-05
+"334118","Computer Terminal and Other Computer Peripheral Equipment Manufacturing",0.000175787125806149
+"334210","Telephone Apparatus Manufacturing",7.85948117305197e-05
+"334220","Radio and Television Broadcasting and Wireless Communications Equipment Manufacturing",0.000292661127280319
+"334290","Other Communications Equipment Manufacturing",0.000105928895220479
+"334310","Audio and Video Equipment Manufacturing",0.000110661449025141
+"334412","Bare Printed Circuit Board Manufacturing",0.000157637064911662
+"334413","Semiconductor and Related Device Manufacturing",0.00117896806738863
+"334416","Capacitor, Resistor, Coil, Transformer, and Other Inductor Manufacturing",9.84944834255181e-05
+"334417","Electronic Connector Manufacturing",0.000133222823708459
+"334418","Printed Circuit Assembly (Electronic Assembly) Manufacturing",0.000346245109206805
+"334419","Other Electronic Component Manufacturing",0.000373625084127597
+"334510","Electromedical and Electrotherapeutic Apparatus Manufacturing",0.000427226275340646
+"334511","Search, Detection, Navigation, Guidance, Aeronautical, and Nautical System and Instrument Manufacturing",0.000706257647663538
+"334512","Automatic Environmental Control Manufacturing for Residential, Commercial, and Appliance Use",7.52447372797042e-05
+"334513","Instruments and Related Products Manufacturing for Measuring, Displaying, and Controlling Industrial Process Variables",0.000329374271946791
+"334514","Totalizing Fluid Meter and Counting Device Manufacturing",5.19089447010782e-05
+"334515","Instrument Manufacturing for Measuring and Testing Electricity and Electrical Signals",0.000209368180318262
+"334516","Analytical Laboratory Instrument Manufacturing",0.000257514027691027
+"334517","Irradiation Apparatus Manufacturing",7.70803945130278e-05
+"334519","Other Measuring and Controlling Device Manufacturing",0.000236094202349683
+"334610","Manufacturing and Reproducing Magnetic and Optical Media",6.70186983028729e-05
+"335131","Residential Electric Lighting Fixture Manufacturing",3.86520576191695e-05
+"335132","Commercial, Industrial, and Institutional Electric Lighting Fixture Manufacturing",0.000105963313793603
+"335139","Electric Lamp Bulb and Other Lighting Equipment Manufacturing",6.71219540222474e-05
+"335210","Small Electrical Appliance Manufacturing",5.98424258063486e-05
+"335220","Major Household Appliance Manufacturing",0.000289075859246484
+"335311","Power, Distribution, and Specialty Transformer Manufacturing",0.000194912379605839
+"335312","Motor and Generator Manufacturing",0.000209890195343989
+"335313","Switchgear and Switchboard Apparatus Manufacturing",0.00025689449337478
+"335314","Relay and Industrial Control Manufacturing",0.000249282252285342
+"335910","Battery Manufacturing",0.000321630092993707
+"335921","Fiber Optic Cable Manufacturing",6.98410212991079e-05
+"335929","Other Communication and Energy Wire Manufacturing",7.52160551354335e-05
+"335931","Current-Carrying Wiring Device Manufacturing",0.000169218914768163
+"335932","Noncurrent-Carrying Wiring Device Manufacturing",6.67318768601661e-05
+"335991","Carbon and Graphite Product Manufacturing",5.9693278656141e-05
+"335999","All Other Miscellaneous Electrical Equipment and Component Manufacturing",0.000219395457955292
+"336110","Automobile and Light Duty Motor Vehicle Manufacturing",0.00145571634102757
+"336120","Heavy Duty Truck Manufacturing",0.0002296005648868
+"336211","Motor Vehicle Body Manufacturing",0.000359324166994236
+"336212","Truck Trailer Manufacturing",0.000242960707688084
+"336213","Motor Home Manufacturing",9.45879753758514e-05
+"336214","Travel Trailer and Camper Manufacturing",0.000255282556866768
+"336310","Motor Vehicle Gasoline Engine and Engine Parts Manufacturing",0.000335896591553944
+"336320","Motor Vehicle Electrical and Electronic Equipment Manufacturing",0.000352165103784274
+"336330","Motor Vehicle Steering and Suspension Components (except Spring) Manufacturing",0.00018401316478298
+"336340","Motor Vehicle Brake System Manufacturing",0.000118933379432805
+"336350","Motor Vehicle Transmission and Power Train Parts Manufacturing",0.000452977104466863
+"336360","Motor Vehicle Seating and Interior Trim Manufacturing",0.000434683632851023
+"336370","Motor Vehicle Metal Stamping",0.000477339717810379
+"336390","Other Motor Vehicle Parts Manufacturing",0.000890660889608599
+"336411","Aircraft Manufacturing",0.00146734408231491
+"336412","Aircraft Engine and Engine Parts Manufacturing",0.000529937033973954
+"336413","Other Aircraft Parts and Auxiliary Equipment Manufacturing",0.000605204716969075
+"336414","Guided Missile and Space Vehicle Manufacturing",0.000468385152369073
+"336415","Guided Missile and Space Vehicle Propulsion Unit and Propulsion Unit Parts Manufacturing",0.000112996175568774
+"336419","Other Guided Missile and Space Vehicle Parts and Auxiliary Equipment Manufacturing",5.36700283592981e-05
+"336510","Railroad Rolling Stock Manufacturing",0.000130469337858473
+"336611","Ship Building and Repairing",0.000623440824296374
+"336612","Boat Building",0.000256039765475514
+"336991","Motorcycle, Bicycle, and Parts Manufacturing",5.91081629130192e-05
+"336992","Military Armored Vehicle, Tank, and Tank Component Manufacturing",4.99126674598389e-05
+"336999","All Other Transportation Equipment Manufacturing",0.000122214616737371
+"337110","Wood Kitchen Cabinet and Countertop Manufacturing",0.000730689098153304
+"337121","Upholstered Household Furniture Manufacturing",0.000275216647134891
+"337122","Nonupholstered Wood Household Furniture Manufacturing",0.0001716282148869
+"337126","Household Furniture (except Wood and Upholstered) Manufacturing",5.86148300315634e-05
+"337127","Institutional Furniture Manufacturing",0.000137421889629686
+"337211","Wood Office Furniture Manufacturing",8.72281371559947e-05
+"337212","Custom Architectural Woodwork and Millwork Manufacturing",0.000169545891212849
+"337214","Office Furniture (except Wood) Manufacturing",0.000108303776766091
+"337215","Showcase, Partition, Shelving, and Locker Manufacturing",0.000223864136032664
+"337910","Mattress Manufacturing",0.000114493383499704
+"337920","Blind and Shade Manufacturing",5.21900297149309e-05
+"339112","Surgical and Medical Instrument Manufacturing",0.00081724033670451
+"339113","Surgical Appliance and Supplies Manufacturing",0.000588746902586558
+"339114","Dental Equipment and Supplies Manufacturing",9.77085926725015e-05
+"339115","Ophthalmic Goods Manufacturing",0.00013942390329978
+"339116","Dental Laboratories",0.000283849972560366
+"339910","Jewelry and Silverware Manufacturing",0.000152531643231481
+"339920","Sporting and Athletic Goods Manufacturing",0.000285157878339109
+"339930","Doll, Toy, and Game Manufacturing",8.06886082622794e-05
+"339940","Office Supplies (except Paper) Manufacturing",6.08749830000931e-05
+"339950","Sign Manufacturing",0.000516404798307047
+"339991","Gasket, Packing, and Sealing Device Manufacturing",0.000166270390337137
+"339992","Musical Instrument Manufacturing",7.48087686867899e-05
+"339993","Fastener, Button, Needle, and Pin Manufacturing",2.99212129031743e-05
+"339994","Broom, Brush, and Mop Manufacturing",4.58283301156939e-05
+"339995","Burial Casket Manufacturing",1.87753316395877e-05
+"339999","All Other Miscellaneous Manufacturing",0.000458965936190581
+"423110","Automobile and Other Motor Vehicle Merchant Wholesalers",0.000815582508765665
+"423120","Motor Vehicle Supplies and New Parts Merchant Wholesalers",0.00105776879855844
+"423130","Tire and Tube Merchant Wholesalers",0.000202203380679446
+"423140","Motor Vehicle Parts (Used) Merchant Wholesalers",0.000135482976676988
+"423210","Furniture Merchant Wholesalers",0.000296441433895195
+"423220","Home Furnishing Merchant Wholesalers",0.00036337982219411
+"423310","Lumber, Plywood, Millwork, and Wood Panel Merchant Wholesalers",0.000669011015113631
+"423320","Brick, Stone, and Related Construction Material Merchant Wholesalers",0.000392974058652599
+"423330","Roofing, Siding, and Insulation Material Merchant Wholesalers",0.000272543471288864
+"423390","Other Construction Material Merchant Wholesalers",0.000215334066326564
+"423410","Photographic Equipment and Supplies Merchant Wholesalers",6.75062947554745e-05
+"423420","Office Equipment Merchant Wholesalers",0.000402335910542549
+"423430","Computer and Computer Peripheral Equipment and Software Merchant Wholesalers",0.00131644732130686
+"423440","Other Commercial Equipment Merchant Wholesalers",0.000343181856198697
+"423450","Medical, Dental, and Hospital Equipment and Supplies Merchant Wholesalers",0.00183227847672849
+"423460","Ophthalmic Goods Merchant Wholesalers",0.000130016159978996
+"423490","Other Professional Equipment and Supplies Merchant Wholesalers",0.000220927084459347
+"423510","Metal Service Centers and Other Metal Merchant Wholesalers",0.000770247511531427
+"423520","Coal and Other Mineral and Ore Merchant Wholesalers",1.54080479022098e-05
+"423610","Electrical Apparatus and Equipment, Wiring Supplies, and Related Equipment Merchant Wholesalers",0.00115575273981594
+"423620","Household Appliances, Electric Housewares, and Consumer Electronics Merchant Wholesalers",0.000207285856644211
+"423690","Other Electronic Parts and Equipment Merchant Wholesalers",0.000824238779906556
+"423710","Hardware Merchant Wholesalers",0.000542585859597324
+"423720","Plumbing and Heating Equipment and Supplies (Hydronics) Merchant Wholesalers",0.000703148503224596
+"423730","Warm Air Heating and Air-Conditioning Equipment and Supplies Merchant Wholesalers",0.000490326992736144
+"423740","Refrigeration Equipment and Supplies Merchant Wholesalers",9.42380532157491e-05
+"423810","Construction and Mining (except Oil Well) Machinery and Equipment Merchant Wholesalers",0.000629165780292802
+"423820","Farm and Garden Machinery and Equipment Merchant Wholesalers",0.000681160771426692
+"423830","Industrial Machinery and Equipment Merchant Wholesalers",0.00201256869918514
+"423840","Industrial Supplies Merchant Wholesalers",0.000628706865984471
+"423850","Service Establishment Equipment and Supplies Merchant Wholesalers",0.000336103102992693
+"423860","Transportation Equipment and Supplies (except Motor Vehicle) Merchant Wholesalers",0.000235291102310103
+"423910","Sporting and Recreational Goods and Supplies Merchant Wholesalers",0.000373980742716554
+"423920","Toy and Hobby Goods and Supplies Merchant Wholesalers",0.000144443278547149
+"423930","Recyclable Material Merchant Wholesalers",0.000628741284557596
+"423940","Jewelry, Watch, Precious Stone, and Precious Metal Merchant Wholesalers",0.000216641972105307
+"423990","Other Miscellaneous Durable Goods Merchant Wholesalers",0.00055520026664757
+"424110","Printing and Writing Paper Merchant Wholesalers",6.73686204629752e-05
+"424120","Stationery and Office Supplies Merchant Wholesalers",0.000227816535513164
+"424130","Industrial and Personal Service Paper Merchant Wholesalers",0.000373688184844993
+"424210","Drugs and Druggists' Sundries Merchant Wholesalers",0.00149846994527745
+"424310","Piece Goods, Notions, and Other Dry Goods Merchant Wholesalers",0.000133389180145228
+"424340","Footwear Merchant Wholesalers",0.000133050730842834
+"424350","Clothing and Clothing Accessories Merchant Wholesalers",0.000572874203947163
+"424410","General Line Grocery Merchant Wholesalers",0.00149958281247515
+"424420","Packaged Frozen Food Merchant Wholesalers",0.00021173732543502
+"424430","Dairy Product (except Dried or Canned) Merchant Wholesalers",0.000202794232851422
+"424440","Poultry and Poultry Product Merchant Wholesalers",7.23191585640948e-05
+"424450","Confectionery Merchant Wholesalers",0.000387071273361693
+"424460","Fish and Seafood Merchant Wholesalers",0.000168777209746395
+"424470","Meat and Meat Product Merchant Wholesalers",0.000282599431070165
+"424480","Fresh Fruit and Vegetable Merchant Wholesalers",0.000575054046911735
+"424490","Other Grocery and Related Products Merchant Wholesalers",0.00146346625640951
+"424510","Grain and Field Bean Merchant Wholesalers",0.000237419317414988
+"424520","Livestock Merchant Wholesalers",9.33718524587745e-05
+"424590","Other Farm Product Raw Material Merchant Wholesalers",9.97278156291574e-05
+"424610","Plastics Materials and Basic Forms and Shapes Merchant Wholesalers",0.000180852392484351
+"424690","Other Chemical and Allied Products Merchant Wholesalers",0.000709670822831749
+"424710","Petroleum Bulk Stations and Terminals",0.000201595319220908
+"424720","Petroleum and Petroleum Products Merchant Wholesalers (except Bulk Stations and Terminals)",0.000392939640079474
+"424810","Beer and Ale Merchant Wholesalers",0.00066450218203428
+"424820","Wine and Distilled Alcoholic Beverage Merchant Wholesalers",0.000581656676522846
+"424910","Farm Supplies Merchant Wholesalers",0.00070786958417155
+"424920","Book, Periodical, and Newspaper Merchant Wholesalers",0.000158663885676552
+"424930","Flower, Nursery Stock, and Florists' Supplies Merchant Wholesalers",0.000290395237882936
+"424940","Tobacco Product and Electronic Cigarette Merchant Wholesalers",0.000144758782134126
+"424950","Paint, Varnish, and Supplies Merchant Wholesalers",0.000137387471056561
+"424990","Other Miscellaneous Nondurable Goods Merchant Wholesalers",0.000523753163669195
+"425120","Wholesale Trade Agents and Brokers",0.00286224280463093
+"441110","New Car Dealers",0.00640986265589635
+"441120","Used Car Dealers",0.00119158821086773
+"441210","Recreational Vehicle Dealers",0.000318377537833412
+"441222","Boat Dealers",0.000238956680347897
+"441227","Motorcycle, ATV, and All Other Motor Vehicle Dealers",0.000479353204338181
+"441330","Automotive Parts and Accessories Retailers",0.00235412140958926
+"441340","Tire Dealers",0.00113732733033645
+"444110","Home Centers",0.00422108233516985
+"444120","Paint and Wallpaper Retailers",0.000255076045428019
+"444140","Hardware Retailers",0.00105155624610941
+"444180","Other Building Material Dealers",0.00154545703402168
+"444230","Outdoor Power Equipment Retailers",0.000195744161789689
+"444240","Nursery, Garden Center, and Farm Supply Retailers",0.000967511826967461
+"445110","Supermarkets and Other Grocery (except Convenience) Stores",0.0151860481055547
+"445131","Convenience Retailers",0.00102751487278173
+"445132","Vending Machine Operators",0.000236966139535511
+"445230","Fruit and Vegetable Retailers",0.000227065063333272
+"445240","Meat Retailers",0.00037417004486874
+"445250","Fish and Seafood Retailers",8.79394543339076e-05
+"445291","Baked Goods Retailers",0.000141259560533103
+"445292","Confectionery and Nut Retailers",0.000137444835345103
+"445298","All Other Specialty Food Retailers",0.000549928488530619
+"445320","Beer, Wine, and Liquor Retailers",0.0010573615121098
+"449110","Furniture Retailers",0.00119173162158908
+"449121","Floor Covering Retailers",0.000430094489767714
+"449122","Window Treatment Retailers",8.50024027605899e-05
+"449129","All Other Home Furnishings Retailers",0.000795040357039003
+"449210","Electronics and Appliance Retailers",0.00234788591142481
+"455110","Department Stores",0.00586415617900237
+"455211","Warehouse Clubs and Supercenters",0.00964491023532873
+"455219","All Other General Merchandise Retailers",0.00358593919601104
+"456110","Pharmacies and Drug Retailers",0.00410267097076278
+"456120","Cosmetics, Beauty Supplies, and Perfume Retailers",0.00120528106654255
+"456130","Optical Goods Retailers",0.00041604023907508
+"456191","Food (Health) Supplement Retailers",0.000313851495467498
+"456199","All Other Health and Personal Care Retailers",0.000455151211002581
+"457110","Gasoline Stations with Convenience Stores",0.00517631246796061
+"457120","Other Gasoline Stations",0.000550112054253951
+"457210","Fuel Dealers",0.000429939606188652
+"458110","Clothing and Clothing Accessories Retailers",0.00509818804339613
+"458210","Shoe Retailers",0.00101150449984983
+"458310","Jewelry Retailers",0.000800484228021578
+"458320","Luggage and Leather Goods Retailers",7.10284620719141e-05
+"459110","Sporting Goods Retailers",0.00177054876582913
+"459120","Hobby, Toy, and Game Retailers",0.00083005551876465
+"459130","Sewing, Needlework, and Piece Goods Retailers",0.000236197458069057
+"459140","Musical Instrument and Supplies Retailers",0.000222034215228195
+"459210","Book Retailers and News Dealers",0.000430008443334902
+"459310","Florists",0.00043802223444413
+"459410","Office Supplies and Stationery Retailers",0.000395922583083625
+"459420","Gift, Novelty, and Souvenir Retailers",0.000850431314054542
+"459510","Used Merchandise Retailers",0.00147418190550904
+"459910","Pet and Pet Supplies Retailers",0.000809134762733616
+"459920","Art Dealers",0.000136102510993235
+"459930","Manufactured (Mobile) Home Dealers",8.05796161140509e-05
+"459991","Tobacco, Electronic Cigarette, and Other Smoking Supplies Retailers",0.000956136488549709
+"459999","All Other Miscellaneous Retailers",0.0012889755635244
+"481111","Scheduled Passenger Air Transportation",0.00287798930183554
+"481112","Scheduled Freight Air Transportation",8.11647318571727e-05
+"481211","Nonscheduled Chartered Passenger Air Transportation",0.000260778055709031
+"481212","Nonscheduled Chartered Freight Air Transportation",6.50511032059042e-05
+"481219","Other Nonscheduled Air Transportation",4.81630566593273e-05
+"482110","Rail transportation",0.00122748678263691
+"483111","Deep Sea Freight Transportation",5.96818057984328e-05
+"483112","Deep Sea Passenger Transportation",9.1283792355869e-05
+"483113","Coastal and Great Lakes Freight Transportation",5.52934377250186e-05
+"483114","Coastal and Great Lakes Passenger Transportation",3.56174867553315e-05
+"483211","Inland Water Freight Transportation",0.000134370109479286
+"483212","Inland Water Passenger Transportation",2.64392005887136e-05
+"484110","General Freight Trucking, Local",0.00218177614109559
+"484121","General Freight Trucking, Long-Distance, Truckload",0.00382480982992613
+"484122","General Freight Trucking, Long-Distance, Less Than Truckload",0.00159080350411363
+"484210","Used Household and Office Goods Moving",0.000571044283142694
+"484220","Specialized Freight (except Used Goods) Trucking, Local",0.0013937629094029
+"484230","Specialized Freight (except Used Goods) Trucking, Long-Distance",0.000800598956598661
+"485111","Mixed Mode Transit Systems",3.45505109884622e-05
+"485112","Commuter Rail Systems",5.88557600434372e-06
+"485113","Bus and Other Motor Vehicle Transit Systems",0.000223382276008917
+"485119","Other Urban Transit Systems",7.82448895704174e-06
+"485210","Interurban and Rural Bus Transportation",9.21213109685728e-05
+"485310","Taxi and Ridesharing Services",0.000724241352121254
+"485320","Limousine Service",0.001010357214079
+"485410","School and Employee Bus Transportation",0.00116549319601026
+"485510","Charter Bus Industry",0.000135603441682925
+"485991","Special Needs Transportation",0.000454015398089462
+"485999","All Other Transit and Ground Passenger Transportation",0.000243574505575476
+"486110","Pipeline Transportation of Crude Oil",7.20151278348255e-05
+"486210","Pipeline Transportation of Natural Gas",0.000203964464337666
+"486910","Pipeline Transportation of Refined Petroleum Products",3.48315960023149e-05
+"486990","All Other Pipeline Transportation",7.18200892537849e-06
+"487110","Scenic and Sightseeing Transportation, Land",6.77931161981813e-05
+"487210","Scenic and Sightseeing Transportation, Water",0.000119266092306345
+"487990","Scenic and Sightseeing Transportation, Other",1.80353323174041e-05
+"488111","Air Traffic Control",1.37215378190937e-05
+"488119","Other Airport Operations",0.000738295602813888
+"488190","Other Support Activities for Air Transportation",0.00084881937754653
+"488210","Support Activities for Rail Transportation",0.000229009712714824
+"488310","Port and Harbor Operations",5.96588600830162e-05
+"488320","Marine Cargo Handling",0.000363936255792961
+"488330","Navigational Services to Shipping",0.000106422228101934
+"488390","Other Support Activities for Water Transportation",5.41863069561703e-05
+"488410","Motor Vehicle Towing",0.000507008527843972
+"488490","Other Support Activities for Road Transportation",0.000259407049212892
+"488510","Freight Transportation Arrangement",0.00169168434194247
+"488991","Packing and Crating",0.00013268359939617
+"488999","All Other Support Activities for Transportation",9.81158791211451e-05
+"491110","Postal Service",7.47571408271026e-05
+"492110","Couriers and Express Delivery Services",0.00576004573172865
+"492210","Local Messengers and Local Delivery",0.00139301717365187
+"493110","General Warehousing and Storage",0.0101309807978551
+"493120","Refrigerated Warehousing and Storage",0.000425327517389927
+"493130","Farm Product Warehousing and Storage",6.14887808874857e-05
+"493190","Other Warehousing and Storage",0.000320109939347361
+"512110","Motion Picture and Video Production",0.00160001047242452
+"512120","Motion Picture and Video Distribution",5.19490997030572e-05
+"512131","Motion Picture Theaters (except Drive-Ins)",0.000687694563891553
+"512132","Drive-In Motion Picture Theaters",1.44328549970066e-05
+"512191","Teleproduction and Other Postproduction Services",0.000151958000346067
+"512199","Other Motion Picture and Video Industries",2.55844726894473e-05
+"512230","Music Publishers",5.62112663416804e-05
+"512240","Sound Recording Studios",9.00561965810838e-05
+"512250","Record Production and Distribution",6.62844354095435e-05
+"512290","Other Sound Recording Industries",2.80396642390176e-05
+"513110","Newspaper Publishers",0.00053574229997434
+"513120","Periodical Publishers",0.000396662582405808
+"513130","Book Publishers",0.000321297380120167
+"513140","Directory and Mailing List Publishers",9.17943345238871e-05
+"513191","Greeting Card Publishers",1.54252571887722e-05
+"513199","All Other Publishers",0.000252919148178864
+"513210","Software Publishers",0.00366496997633448
+"516110","Radio Broadcasting Stations",0.000320763892236733
+"516120","Television Broadcasting Stations",0.000400913276186723
+"516210","Media Streaming Distribution Services, Social Networks, and Other Media Networks and Content Providers",0.00137900307796121
+"517111","Wired Telecommunications Carriers",0.00266014267967086
+"517112","Wireless Telecommunications Carriers (except Satellite)",0.000500646828244735
+"517121","Telecommunications Resellers",0.000229101495576491
+"517410","Satellite Telecommunications",5.28726647485731e-05
+"517810","All Other Telecommunications",0.000280322068815072
+"518210","Computing Infrastructure Providers, Data Processing, Web Hosting, and Related Services",0.00286887411638631
+"519210","Libraries and Archives",0.00016488791098329
+"519290","Web Search Portals and All Other Information Services",0.000933534958864413
+"521110","Monetary Authorities-Central Bank",0.000122897251771013
+"522110","Commercial Banking",0.00793905691411655
+"522130","Credit Unions",0.00178766626952987
+"522180","Savings Institutions and Other Depository Credit Intermediation",0.000554695460908406
+"522210","Credit Card Issuing",0.000378971435819652
+"522220","Sales Financing",0.000490808852759891
+"522291","Consumer Lending",0.000531164629748739
+"522292","Real Estate Credit",0.00105870957289052
+"522299","International, Secondary Market, and All Other Nondepository Credit Intermediation",0.000520139213491089
+"522310","Mortgage and Nonmortgage Loan Brokers",0.00050273488834764
+"522320","Financial Transactions Processing, Reserve, and Clearinghouse Activities",0.00074847776402998
+"522390","Other Activities Related to Credit Intermediation",0.000433937897099985
+"523150","Investment Banking and Securities Intermediation",0.00263861959861014
+"523160","Commodity Contracts Intermediation",0.000160155357178628
+"523210","Securities and Commodity Exchanges",5.35897183553401e-05
+"523910","Miscellaneous Intermediation",0.000264609990183593
+"523940","Portfolio Management and Investment Advice",0.00338224434382952
+"523991","Trust, Fiduciary, and Custody Activities",0.000145820021472142
+"523999","Miscellaneous Financial Investment Activities",0.000229067077003366
+"524113","Direct Life Insurance Carriers",0.0013343277700452
+"524114","Direct Health and Medical Insurance Carriers",0.00283333120320609
+"524126","Direct Property and Casualty Insurance Carriers",0.00286626404125768
+"524127","Direct Title Insurance Carriers",0.000364205867949106
+"524128","Other Direct Insurance (except Life, Health, and Medical) Carriers",0.00012899507564296
+"524130","Reinsurance Carriers",0.00019789532260999
+"524210","Insurance Agencies and Brokerages",0.00792449785768475
+"524291","Claims Adjusting",0.000437752622287986
+"524292","Pharmacy Benefit Management and Other Third Party Administration of Insurance and Pension Funds",0.00136323363504119
+"524298","All Other Insurance Related Activities",0.00064444762676022
+"525110","Pension Funds",2.93819885908855e-05
+"525120","Health and Welfare Funds",3.03973364980676e-05
+"525190","Other Insurance Funds",1.43582814219028e-05
+"525910","Open-End Investment Funds",2.26761032604003e-05
+"525920","Trusts, Estates, and Agency Accounts",2.5360751964136e-05
+"525990","Other Financial Vehicles",6.75521861863076e-05
+"531110","Lessors of Residential Buildings and Dwellings",0.00304248713565674
+"531120","Lessors of Nonresidential Buildings (except Miniwarehouses)",0.00140633142502232
+"531130","Lessors of Miniwarehouses and Self-Storage Units",0.000640833676582114
+"531190","Lessors of Other Real Estate Property",0.000386440266187738
+"531210","Offices of Real Estate Agents and Brokers",0.00319641273109978
+"531311","Residential Property Managers",0.00330775107872971
+"531312","Nonresidential Property Managers",0.00106095251657249
+"531320","Offices of Real Estate Appraisers",0.000180944175346017
+"531390","Other Activities Related to Real Estate",0.000736402581292023
+"532111","Passenger Car Rental",0.000636800967097657
+"532112","Passenger Car Leasing",6.87453633879679e-05
+"532120","Truck, Utility Trailer, and RV (Recreational Vehicle) Rental and Leasing",0.000548884458479166
+"532210","Consumer Electronics and Appliances Rental",5.42436712447117e-05
+"532281","Formal Wear and Costume Rental",3.06497393676496e-05
+"532282","Video Tape and Disc Rental",1.64348686671001e-05
+"532283","Home Health Equipment Rental",0.000190340445809092
+"532284","Recreational Goods Rental",0.000122008105298622
+"532289","All Other Consumer Goods Rental",0.000369993924662929
+"532310","General Rental Centers",0.000183628824049753
+"532411","Commercial Air, Rail, and Water Transportation Equipment Rental and Leasing",3.08562508063985e-05
+"532412","Construction, Mining, and Forestry Machinery and Equipment Rental and Leasing",0.000569524129496348
+"532420","Office Machinery and Equipment Rental and Leasing",6.34162209824754e-05
+"532490","Other Commercial and Industrial Machinery and Equipment Rental and Leasing",0.000489466528408023
+"533110","Lessors of Nonfinancial Intangible Assets (except Copyrighted Works)",0.000128742672773378
+"541110","Offices of Lawyers",0.00738099416947077
+"541191","Title Abstract and Settlement Offices",0.000372500744072187
+"541199","All Other Legal Services",0.000263112782252664
+"541211","Offices of Certified Public Accountants",0.00318940855146888
+"541213","Tax Preparation Services",0.00083431194897442
+"541214","Payroll Services",0.0013412688489587
+"541219","Other Accounting Services",0.00232420593311494
+"541310","Architectural Services",0.00128539029549056
+"541320","Landscape Architectural Services",0.000300393833375695
+"541330","Engineering Services",0.00693311675025523
+"541340","Drafting Services",9.98654899216567e-05
+"541350","Building Inspection Services",0.000211513604709709
+"541360","Geophysical Surveying and Mapping Services",8.75321678852639e-05
+"541370","Surveying and Mapping (except Geophysical) Services",0.000344977358430041
+"541380","Testing Laboratories and Services",0.00102577099841007
+"541410","Interior Design Services",0.000657824978848066
+"541420","Industrial Design Services",0.000150305908836076
+"541430","Graphic Design Services",0.000731452043190904
+"541490","Other Specialized Design Services",0.000179418285270817
+"541511","Custom Computer Programming Services",0.00665175065138871
+"541512","Computer Systems Design Services",0.0069199000181753
+"541513","Computer Facilities Management Services",0.000492237223544571
+"541519","Other Computer Related Services",0.000853311001339318
+"541611","Administrative Management and General Management Consulting Services",0.00576213952826041
+"541612","Human Resources Consulting Services",0.000620916795600554
+"541613","Marketing Consulting Services",0.00229472068880468
+"541614","Process, Physical Distribution, and Logistics Consulting Services",0.00102655688916309
+"541618","Other Management Consulting Services",0.0008567528586518
+"541620","Environmental Consulting Services",0.000693614558469022
+"541690","Other Scientific and Technical Consulting Services",0.00153392107559601
+"541713","Research and Development in Nanotechnology",0.000140221266910505
+"541714","Research and Development in Biotechnology (except Nanobiotechnology)",0.00166776917004957
+"541715","Research and Development in the Physical, Engineering, and Life Sciences (except Nanotechnology and Biotechnology)",0.00319809350475404
+"541720","Research and Development in the Social Sciences and Humanities",0.000404309242068372
+"541810","Advertising Agencies",0.00138276043886067
+"541820","Public Relations Agencies",0.00046827042379199
+"541830","Media Buying Agencies",0.000112365168394819
+"541840","Media Representatives",0.000119931518053425
+"541850","Indoor and Outdoor Display Advertising",0.000201142141341431
+"541860","Direct Mail Advertising",0.000209322288887429
+"541870","Advertising Material Distribution Services",0.000109760829695042
+"541890","Other Services Related to Advertising",0.000612432617325286
+"541910","Marketing Research and Public Opinion Polling",0.000436186577210806
+"541921","Photography Studios, Portrait",0.000333487291435207
+"541922","Commercial Photography",0.000114149197768456
+"541930","Translation and Interpretation Services",0.000268137893928887
+"541940","Veterinary Services",0.00279451278915015
+"541990","All Other Professional, Scientific, and Technical Services",0.00201560327004897
+"551111","Offices of Bank Holding Companies",4.88915831238026e-05
+"551112","Offices of Other Holding Companies",0.000510192245858017
+"551114","Corporate, Subsidiary, and Regional Managing Offices",0.0144347537549573
+"561110","Office Administrative Services",0.0037421134715649
+"561210","Facilities Support Services",0.00103273502303899
+"561311","Employment Placement Agencies",0.00146090780914057
+"561312","Executive Search Services",0.000250813878789396
+"561320","Temporary Help Services",0.0150462914893814
+"561330","Professional Employer Organizations",0.00244535931051429
+"561410","Document Preparation Services",0.000371841054753961
+"561421","Telephone Answering Services",0.000217754839303009
+"561422","Telemarketing Bureaus and Other Contact Centers",0.00188116432342344
+"561431","Private Mail Centers",0.000221351580194553
+"561439","Other Business Service Centers (including Copy Shops)",0.000254513875400314
+"561440","Collection Agencies",0.00052026541492588
+"561450","Credit Bureaus",0.000129075385646918
+"561491","Repossession Services",5.69799478081346e-05
+"561492","Court Reporting and Stenotype Services",0.000130773368587742
+"561499","All Other Business Support Services",0.000594804571456526
+"561510","Travel Agencies",0.000588941941167599
+"561520","Tour Operators",0.00016176729368664
+"561591","Convention and Visitors Bureaus",6.08749830000931e-05
+"561599","All Other Travel Arrangement and Reservation Services",0.000463589497847015
+"561611","Investigation and Personal Background Check Services",0.000276329514332594
+"561612","Security Guards and Patrol Services",0.00472917504806726
+"561613","Armored Car Services",0.000151912108915234
+"561621","Security Systems Services (except Locksmiths)",0.000862850682523747
+"561622","Locksmiths",0.000137857858222601
+"561710","Exterminating and Pest Control Services",0.000907439944006947
+"561720","Janitorial Services",0.00822712889831356
+"561730","Landscaping Services",0.00737144875185748
+"561740","Carpet and Upholstery Cleaning Services",0.000268826265391384
+"561790","Other Services to Buildings and Dwellings",0.000931521472336611
+"561910","Packaging and Labeling Services",0.000372919503378539
+"561920","Convention and Trade Show Organizers",0.000343721080510985
+"561990","All Other Support Services",0.00125523388900437
+"562111","Solid Waste Collection",0.00112619292193058
+"562112","Hazardous Waste Collection",7.7849075979482e-05
+"562119","Other Waste Collection",0.000110414782584413
+"562211","Hazardous Waste Treatment and Disposal",0.000254037751805421
+"562212","Solid Waste Landfill",0.000231212501394813
+"562213","Solid Waste Combustors and Incinerators",2.7213618484022e-05
+"562219","Other Nonhazardous Waste Treatment and Disposal",0.000123826553245383
+"562910","Remediation Services",0.00059524054004944
+"562920","Materials Recovery Facilities",0.000154476292613033
+"562991","Septic Tank and Related Services",0.000224437778918078
+"562998","All Other Miscellaneous Waste Management Services",0.000147695833707444
+"611110","Elementary and Secondary Schools",0.00751020722941018
+"611210","Junior Colleges",0.000184816264822559
+"611310","Colleges, Universities, and Professional Schools",0.0110694261398187
+"611410","Business and Secretarial Schools",2.08576553136391e-05
+"611420","Computer Training",0.00011624873072907
+"611430","Professional and Management Development Training",0.000332448997812608
+"611511","Cosmetology and Barber Schools",0.000110277108291914
+"611512","Flight Training",0.000161107604368414
+"611513","Apprenticeship Training",9.6549834043966e-05
+"611519","Other Technical and Trade Schools",0.000374961672050611
+"611610","Fine Arts Schools",0.00100360543731769
+"611620","Sports and Recreation Instruction",0.00141939900995204
+"611630","Language Schools",0.000121818803146436
+"611691","Exam Preparation and Tutoring",0.000768440536442374
+"611692","Automobile Driving Schools",0.000151218001023884
+"611699","All Other Miscellaneous Schools and Instruction",0.00063269942046695
+"611710","Educational Support Services",0.00141557281190633
+"621111","Offices of Physicians (except Mental Health Specialists)",0.0168147177765345
+"621112","Offices of Physicians, Mental Health Specialists",0.000565147234280642
+"621210","Offices of Dentists",0.00629924136187318
+"621310","Offices of Chiropractors",0.000963697101779461
+"621320","Offices of Optometrists",0.000938296194813346
+"621330","Offices of Mental Health Practitioners (except Physicians)",0.00173614166556202
+"621340","Offices of Physical, Occupational and Speech Therapists, and Audiologists",0.00295802395720844
+"621391","Offices of Podiatrists",0.000193994550989177
+"621399","Offices of All Other Miscellaneous Health Practitioners",0.00120716261520671
+"621410","Family Planning Centers",0.00021004507892305
+"621420","Outpatient Mental Health and Substance Abuse Centers",0.00194949666393391
+"621491","HMO Medical Centers",0.00129265835084875
+"621492","Kidney Dialysis Centers",0.000813058480069845
+"621493","Freestanding Ambulatory Surgical and Emergency Centers",0.00110952285968046
+"621498","All Other Outpatient Care Centers",0.0016112194544055
+"621511","Medical Laboratories",0.00135157147518073
+"621512","Diagnostic Imaging Centers",0.000518165881965267
+"621610","Home Health Care Services",0.0104720172296624
+"621910","Ambulance Services",0.00106706181330214
+"621991","Blood and Organ Banks",0.000526363238797827
+"621999","All Other Miscellaneous Ambulatory Health Care Services",0.000715189267389428
+"622110","General Medical and Surgical Hospitals",0.0293640220957143
+"622210","Psychiatric and Substance Abuse Hospitals",0.00076710394851936
+"622310","Specialty (except Psychiatric and Substance Abuse) Hospitals",0.00158822211112927
+"623110","Nursing Care Facilities (Skilled Nursing Facilities)",0.00875019369052026
+"623210","Residential Intellectual and Developmental Disability Facilities",0.00237779565147028
+"623220","Residential Mental Health and Substance Abuse Facilities",0.00153082340401478
+"623311","Continuing Care Retirement Communities",0.00282068237758272
+"623312","Assisted Living Facilities for the Elderly",0.00292028972820594
+"623990","Other Residential Care Facilities",0.000964133070372375
+"624110","Child and Youth Services",0.00148372158669347
+"624120","Services for the Elderly and Persons with Disabilities",0.0146439039509791
+"624190","Other Individual and Family Services",0.00339551844019799
+"624210","Community Food Services",0.000299785771917157
+"624221","Temporary Shelters",0.000555188793789861
+"624229","Other Community Housing Services",0.000291003299341474
+"624230","Emergency and Other Relief Services",0.000219607705822895
+"624310","Vocational Rehabilitation Services",0.00168342962082136
+"624410","Child Care Services",0.00717658226368248
+"711110","Theater Companies and Dinner Theaters",0.000486781879704288
+"711120","Dance Companies",0.00010648532881933
+"711130","Musical Groups and Artists",0.000362221063565575
+"711190","Other Performing Arts Companies",6.70244347317271e-05
+"711211","Sports Teams and Clubs",0.000702213465321372
+"711212","Racetracks",0.000151281101741279
+"711219","Other Spectator Sports",0.000189646337917742
+"711310","Promoters of Performing Arts, Sports, and Similar Events with Facilities",0.000838602797757313
+"711320","Promoters of Performing Arts, Sports, and Similar Events without Facilities",0.000295598178853637
+"711410","Agents and Managers for Artists, Athletes, Entertainers, and Other Public Figures",0.000212850192632723
+"711510","Independent Artists, Writers, and Performers",0.00210092117639654
+"712110","Museums",0.000609271845026657
+"712120","Historical Sites",9.02512351621244e-05
+"712130","Zoos and Botanical Gardens",0.000283901600420053
+"712190","Nature Parks and Other Similar Institutions",8.50310849048605e-05
+"713110","Amusement and Theme Parks",0.00121516493345823
+"713120","Amusement Arcades",0.00021516197346094
+"713210","Casinos (except Casino Hotels)",0.000378030661487574
+"713290","Other Gambling Industries",0.000413458846090719
+"713910","Golf Courses and Country Clubs",0.00257585733051704
+"713920","Skiing Facilities",0.00025410658895167
+"713930","Marinas",0.000280505634538405
+"713940","Fitness and Recreational Sports Centers",0.00414008969617831
+"713950","Bowling Centers",0.000406162108588258
+"713990","All Other Amusement and Recreation Industries",0.00167055133804383
+"721110","Hotels (except Casino Hotels) and Motels",0.00900744957891285
+"721120","Casino Hotels",0.00147204221754645
+"721191","Bed-and-Breakfast Inns",9.07503044724343e-05
+"721199","All Other Traveler Accommodation",0.000115594777839698
+"721211","RV (Recreational Vehicle) Parks and Campgrounds",0.00022661762188265
+"721214","Recreational and Vacation Camps (except Campgrounds)",0.000235199319448437
+"721310","Rooming and Boarding Houses, Dormitories, and Workers' Camps",8.73371293042233e-05
+"722310","Food Service Contractors",0.00373014728097517
+"722320","Caterers",0.00134210636757141
+"722330","Mobile Food Services",0.000505281862758877
+"722410","Drinking Places (Alcoholic Beverages)",0.00246819029735376
+"722511","Full-Service Restaurants",0.0310449678428419
+"722513","Limited-Service Restaurants",0.0268422420800052
+"722514","Cafeterias, Grill Buffets, and Buffets",0.000480070257944948
+"722515","Snack and Nonalcoholic Beverage Bars",0.00552035478848743
+"811111","General Automotive Repair",0.00299865508278229
+"811114","Specialized Automotive Repair",0.000353645102428641
+"811121","Automotive Body, Paint, and Interior Repair and Maintenance",0.00171384416660599
+"811122","Automotive Glass Replacement Shops",0.000272807347016154
+"811191","Automotive Oil Change and Lubrication Shops",0.000521148824969417
+"811192","Car Washes",0.00130446965785942
+"811198","All Other Automotive Repair and Maintenance",0.000260732164278197
+"811210","Electronic and Precision Equipment Repair and Maintenance",0.000693453938461106
+"811310","Commercial and Industrial Machinery and Equipment (except Automotive and Electronic) Repair and Maintenance",0.00166806172792113
+"811411","Home and Garden Equipment Repair and Maintenance",5.80125050018791e-05
+"811412","Appliance Repair and Maintenance",0.000200958575618098
+"811420","Reupholstery and Furniture Repair",0.000119541440891344
+"811430","Footwear and Leather Goods Repair",1.75419994359484e-05
+"811490","Other Personal and Household Goods Repair and Maintenance",0.000491806991380511
+"812111","Barber Shops",0.000563150957039402
+"812112","Beauty Salons",0.00452098857209295
+"812113","Nail Salons",0.00154511284829043
+"812191","Diet and Weight Reducing Centers",0.000117155086488023
+"812199","Other Personal Care Services",0.00154664447479449
+"812210","Funeral Homes and Funeral Services",0.000651055992800185
+"812220","Cemeteries and Crematories",0.000195027108182922
+"812310","Coin-Operated Laundries and Drycleaners",0.000259498832074558
+"812320","Drycleaning and Laundry Services (except Coin-Operated)",0.000577629703467242
+"812331","Linen Supply",0.000387748171966481
+"812332","Industrial Launderers",0.000394752351597381
+"812910","Pet Care (except Veterinary) Services",0.00131176065893303
+"812921","Photofinishing Laboratories (except One-Hour)",3.44644645556501e-05
+"812922","One-Hour Photofinishing",3.84340733227124e-06
+"812930","Parking Lots and Garages",0.000797266091434408
+"812990","All Other Personal Services",0.00130220376846204
+"813110","Religious Organizations",0.0089813029361957
+"813211","Grantmaking Foundations",0.000461937406337024
+"813212","Voluntary Health Organizations",0.000233151414347511
+"813219","Other Grantmaking and Giving Services",0.000264977121630258
+"813311","Human Rights Organizations",0.000338288682386119
+"813312","Environment, Conservation and Wildlife Organizations",0.000472641582578842
+"813319","Other Social Advocacy Organizations",0.000750410940553824
+"813410","Civic and Social Organizations",0.00209221901382482
+"813910","Business Associations",0.000687430688164263
+"813920","Professional Organizations",0.000519152547728178
+"813930","Labor Unions and Similar Labor Organizations",0.000615908893210893
+"813940","Political Organizations",8.93563522608792e-05
+"813990","Other Similar Organizations (except Business, Professional, Labor, and Political Organizations)",0.000628070122381662
+"814110","Private Households",0.00875143849558161
+"901149","US Postal Service",0.00347454922052143
+"901199","Federal Government, Civilian, Excluding Postal Service",0.0144898521541013
+"901200","Federal Government, Military",0.0106265853051371
+"902611","Elementary and Secondary Schools (State Government)",0.000365508037298995
+"902612","Colleges, Universities, and Professional Schools (State Government)",0.0154090001493996
+"902619","All Other Schools and Educational Support Services (State Government)",8.73486021619315e-05
+"902622","Hospitals (State Government)",0.00255276246795029
+"902999","State Government, Excluding Education and Hospitals",0.0133722007747345
+"903611","Elementary and Secondary Schools (Local Government)",0.0424926885198754
+"903612","Colleges, Universities, and Professional Schools (Local Government)",0.0036546616136836
+"903619","All Other Schools and Educational Support Services (Local Government)",0.000350099989396785
+"903622","Hospitals (Local Government)",0.00400531803667923
+"903999","Local Government, Excluding Education and Hospitals",0.0342223413665748
+"999999","Unclassified Industry",0.00133794745665216

@@ -1,198 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="pipeline-id" content="pipeline_20260427_093746">
-  <meta name="build-time" content="2026-04-27 10:01:39 EDT">
-  <title>RMI Clean Growth Tool</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-  <link href="styles.css" rel="stylesheet">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RMI Clean Growth Tool</title>
+<meta name="description" content="Regional industrial complexity and energy technology readiness across the United States." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body>
-  <div class="app-shell">
-    <header class="header">
-      <div class="brand">
-        <img id="brand-logo-img" class="brand-logo" src="rmi_logo_dark.svg" alt="RMI" onerror="this.outerHTML='<div class=brand-mark>RMI</div>'">
-        <div>
-          <div class="brand-title">Clean Growth Tool</div>
-          <div class="brand-subtitle">Interactive economic complexity, geography, and strategic opportunity explorer</div>
-        </div>
-      </div>
-      <div class="header-right">
-        <a class="header-link" href="#/">Home</a>
-        <a class="header-link" href="#/about">About</a>
-      </div>
-    </header>
-    <nav class="tab-bar">
-      <button class="tab-btn active" data-tab="home">Home</button>
-      <button class="tab-btn" data-tab="geography">Geography Explorer</button>
-      <button class="tab-btn" data-tab="industry">Industry Explorer</button>
-      <button class="tab-btn" data-tab="energy-tech">Energy Technology</button>
-      <button class="tab-btn" data-tab="industry-space">Industry Space</button>
-      <button class="tab-btn" data-tab="peers">Peers &amp; Heatmaps</button>
-      <button class="tab-btn" data-tab="about">About</button>
-    </nav>
-    <div class="main-wrap">
-      <aside class="sidebar" id="sidebar">
-        <div id="sidebar-home">
-          <h3>Home</h3>
-          <p class="small muted">A tour of the dashboard. Pick a tab above to start exploring; controls for the active view appear here.</p>
-        </div>
-        <div id="sidebar-geography" style="display:none">
-          <h3>Geography Explorer</h3>
-          <label for="geo-level">Geography level</label>
-          <select id="geo-level"></select>
-          <label for="geo-metric">Map metric</label>
-          <select id="geo-metric"></select>
-          <label for="geo-search">Search geography</label>
-          <input id="geo-search" list="geo-search-list" placeholder="Type a name and pick from list">
-          <datalist id="geo-search-list"></datalist>
-          <div class="toolbar">
-            <button class="btn" id="geo-refresh">Update map</button>
-            <button class="btn btn-secondary" id="geo-reset">Clear selection</button>
-          </div>
-        </div>
-        <div id="sidebar-industry" style="display:none">
-          <h3>Industry Explorer</h3>
-          <label for="ind-level">Geography level</label>
-          <select id="ind-level"></select>
-          <label for="ind-code">Six-digit NAICS industry</label>
-          <input id="ind-code" list="industry-search-list" placeholder="NAICS or description">
-          <datalist id="industry-search-list"></datalist>
-          <label for="ind-metric">Map metric</label>
-          <select id="ind-metric">
-            <option value="industry_feasibility" selected>Industry feasibility</option>
-            <option value="industry_feasibility_percentile_score">Industry feasibility percentile</option>
-            <option value="location_quotient">Location quotient</option>
-            <option value="industry_employment_share">Industry employment share</option>
-            <option value="industry_present">Industry presence (binary)</option>
-            <option value="industry_comparative_advantage">Comparative advantage (binary)</option>
-          </select>
-          <div class="toolbar">
-            <button class="btn" id="ind-refresh">Update map</button>
-          </div>
-        </div>
-        <div id="sidebar-energy-tech" style="display:none">
-          <h3>Energy Technology</h3>
-          <label for="et-level">Geography level</label>
-          <select id="et-level"></select>
-          <label for="et-tech">Energy technology subcategory</label>
-          <select id="et-tech"></select>
-          <label for="et-metric">Map metric</label>
-          <select id="et-metric">
-            <option value="complexity_weighted_feasibility" selected>Complexity-weighted feasibility</option>
-            <option value="complexity_weighted_feasibility_percentile">Complexity-weighted feasibility percentile</option>
-            <option value="mean_feasibility">Mean industry feasibility</option>
-            <option value="share_present">Share of category industries present</option>
-            <option value="n_present">Count of category industries present</option>
-            <option value="max_location_quotient">Max location quotient in category</option>
-          </select>
-          <div class="toolbar">
-            <button class="btn" id="et-refresh">Update map</button>
-          </div>
-        </div>
-        <div id="sidebar-industry-space" style="display:none">
-          <h3>Industry Space</h3>
-          <label for="space-level">Geography level</label>
-          <select id="space-level"></select>
-          <label for="space-highlight">Highlight a geography (optional)</label>
-          <input id="space-highlight" list="geo-search-list" placeholder="Type a name and pick from list">
-          <div class="toolbar">
-            <button class="btn" id="space-refresh">Render network</button>
-          </div>
-        </div>
-        <div id="sidebar-peers" style="display:none">
-          <h3>Peers &amp; Heatmaps</h3>
-          <label for="peer-level">Geography level</label>
-          <select id="peer-level"></select>
-          <label for="peer-anchor">Anchor geography</label>
-          <input id="peer-anchor" list="geo-search-list" placeholder="Type a name and pick from list">
-          <label for="peer-metric">Heatmap metric</label>
-          <select id="peer-metric">
-            <option value="location_quotient" selected>Location quotient</option>
-            <option value="industry_feasibility">Industry feasibility</option>
-          </select>
-          <p class="small muted">The heatmap compares the anchor and its top peers across their strongest industries.</p>
-          <div class="toolbar">
-            <button class="btn" id="peer-refresh">Update heatmap</button>
-          </div>
-        </div>
-        <div id="sidebar-about" style="display:none">
-          <h3>About</h3>
-          <p class="small muted">Methodology, sources, and a recreation of the Energy Technology Industry Crosswalk.</p>
-        </div>
-      </aside>
-      <main class="content">
-        <section class="panel active" id="panel-home">
-          <div class="cards" id="home-cards"></div>
-          <div class="chart-box">
-            <div class="section-title">Welcome</div>
-            <p>The Clean Growth Tool helps users see the industrial structure of US regions, find feasible new industries, and identify clusters relevant to clean-energy growth. Use the tabs above to switch between views.</p>
-            <ul>
-              <li><strong>Geography Explorer</strong> &mdash; choose a region; see its complexity, top industries, and feasibility scatter.</li>
-              <li><strong>Industry Explorer</strong> &mdash; choose a six-digit NAICS industry; see where it is strongest and where it is feasible.</li>
-              <li><strong>Energy Technology</strong> &mdash; complexity-weighted feasibility for each technology subcategory; pulled from the illustrative crosswalk.</li>
-              <li><strong>Industry Space</strong> &mdash; the network of co-located industries with a force-directed layout.</li>
-              <li><strong>Peers &amp; Heatmaps</strong> &mdash; pick an anchor region and compare it across its top peers.</li>
-              <li><strong>About</strong> &mdash; methodology and the energy-technology crosswalk.</li>
-            </ul>
-            <div class="callout"><strong>Note:</strong> The Energy Technology classification is illustrative and substantively under refinement. See the About tab for the full crosswalk.</div>
-          </div>
-        </section>
-        <section class="panel" id="panel-geography">
-          <div class="cards" id="geo-cards"></div>
-          <div class="map-wrap">
-            <div class="map-box" id="geo-map-box"><svg id="geo-map" class="map-svg"></svg><div class="legend" id="geo-map-legend"></div><div class="dl-toolbar"><button data-target="geo-map" data-kind="svg">SVG</button><button data-target="geo-map" data-kind="png">PNG</button><button data-target="geo-map-data" data-kind="csv">CSV</button></div></div>
-            <div class="side-box" id="geo-summary">Click a region or pick one from the search box to see its profile.</div>
-          </div>
-          <div class="chart-box"><div class="section-title">Industry feasibility scatter (selected geography)</div><div class="controls-row"><label>X axis<select id="geo-scatter-x"></select></label><label>Y axis<select id="geo-scatter-y"></select></label><div class="dl-toolbar"><button data-target="geo-scatter" data-kind="svg">SVG</button><button data-target="geo-scatter" data-kind="png">PNG</button><button data-target="geo-scatter-data" data-kind="csv">CSV</button></div></div><svg id="geo-scatter" class="map-svg" style="height:440px"></svg></div>
-          <div id="geo-top-industries"></div>
-          <div id="geo-target-industries"></div>
-        </section>
-        <section class="panel" id="panel-industry">
-          <div class="cards" id="industry-cards"></div>
-          <div class="map-wrap">
-            <div class="map-box" id="industry-map-box"><svg id="industry-map" class="map-svg"></svg><div class="legend" id="industry-map-legend"></div><div class="dl-toolbar"><button data-target="industry-map" data-kind="svg">SVG</button><button data-target="industry-map" data-kind="png">PNG</button><button data-target="industry-map-data" data-kind="csv">CSV</button></div></div>
-            <div class="side-box" id="industry-summary">Choose an industry to explore where it is currently strong and where it appears feasible.</div>
-          </div>
-          <div class="chart-box"><div class="section-title">Industry scatter</div><div class="controls-row"><label>X axis<select id="ind-scatter-x"></select></label><label>Y axis<select id="ind-scatter-y"></select></label><div class="dl-toolbar"><button data-target="industry-scatter" data-kind="svg">SVG</button><button data-target="industry-scatter" data-kind="png">PNG</button><button data-target="industry-scatter-data" data-kind="csv">CSV</button></div></div><svg id="industry-scatter" class="map-svg" style="height:440px"></svg></div>
-          <div id="industry-top-geos"></div>
-        </section>
-        <section class="panel" id="panel-energy-tech">
-          <div class="cards" id="et-cards"></div>
-          <div class="map-wrap">
-            <div class="map-box" id="et-map-box"><svg id="et-map" class="map-svg"></svg><div class="legend" id="et-map-legend"></div><div class="dl-toolbar"><button data-target="et-map" data-kind="svg">SVG</button><button data-target="et-map" data-kind="png">PNG</button><button data-target="et-map-data" data-kind="csv">CSV</button></div></div>
-            <div class="side-box" id="et-summary">Pick a technology subcategory to see complexity-weighted feasibility across regions.</div>
-          </div>
-          <div id="et-top-geos"></div>
-          <div id="et-top-industries"></div>
-        </section>
-        <section class="panel" id="panel-industry-space">
-          <div class="cards" id="space-cards"></div>
-          <div class="chart-box"><div class="section-title">Industry space network</div><div class="controls-row"><div class="dl-toolbar"><button data-target="industry-space-network" data-kind="svg">SVG</button><button data-target="industry-space-network" data-kind="png">PNG</button></div></div><svg id="industry-space-network" class="map-svg" style="height:720px"></svg></div>
-          <div id="industry-space-table"></div>
-        </section>
-        <section class="panel" id="panel-peers">
-          <div class="cards" id="peers-cards"></div>
-          <div class="chart-box"><div class="section-title">Peer geographies</div><div id="peers-list-table"></div></div>
-          <div class="chart-box"><div class="section-title">Industry concentration heatmap (anchor and top peers)</div><div class="controls-row"><div class="dl-toolbar"><button data-target="peers-heatmap" data-kind="svg">SVG</button><button data-target="peers-heatmap" data-kind="png">PNG</button><button data-target="peers-heatmap-data" data-kind="csv">CSV</button></div></div><svg id="peers-heatmap" class="map-svg" style="min-height:520px"></svg></div>
-        </section>
-        <section class="panel" id="panel-about"><div id="about-content"></div></section>
-      </main>
-    </div>
-    <footer class="footer">
-      <div>RMI Clean Growth Tool &middot; Built from Lightcast 6-digit NAICS employment via Daboin et al. economic complexity methodology</div>
-      <div><a href="https://rmi.org" target="_blank" rel="noopener">rmi.org</a></div>
-    </footer>
+<header class="site-header" role="banner">
+  <a class="brand" href="#/" aria-label="Home">
+    <img class="brand-logo" src="assets/logo.svg" alt="RMI" />
+    <span class="brand-text">Clean Growth Tool</span>
+  </a>
+  <nav class="site-nav" role="navigation" aria-label="Primary">
+    <a href="#/" data-route="home">Home</a>
+    <a href="#/national" data-route="national">National view</a>
+    <a href="#/regional" data-route="regional">Regional view</a>
+    <a href="#/about" data-route="about">About</a>
+  </nav>
+</header>
+<main id="app" class="app-main" role="main"></main>
+<div id="loading-indicator" class="loading-indicator" hidden>
+  <div class="loading-spinner" aria-hidden="true"></div>
+  <div class="loading-text">Loading data...</div>
+</div>
+<div id="tooltip" class="tooltip" role="tooltip" hidden></div>
+<footer class="site-footer">
+  <div class="footer-row">
+    <span id="footer-pipeline">Pipeline: ...</span>
+    <span class="footer-sep">|</span>
+    <span>Lightcast 2024 employment data</span>
+    <span class="footer-sep">|</span>
+    <a href="#/about">Methodology</a>
+    <span class="footer-sep">|</span>
+    <a id="footer-issues" href="#" target="_blank" rel="noopener">Report an issue</a>
   </div>
-  <div class="tooltip" id="tooltip"></div>
-  <div class="spinner" id="spinner"><div class="spinner-circle"></div></div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
-  <script src="dashboard.js"></script>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.8.5/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="assets/dashboard.js"></script>
 </body>
 </html>
+

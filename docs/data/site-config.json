@@ -1,0 +1,106 @@
+{
+  "pipeline_id": "pipeline_20260427_135853",
+  "build_time": "2026-04-27T13:58:53-0400",
+  "provenance": {
+    "lightcast_file": "LIGHTCAST_2024_EMPLOYMENT_COUNTY_6DNAICS_GEOID.csv",
+    "lightcast_modified": "2025-08-29T13:10:49-0400",
+    "lightcast_vintage": "2024",
+    "tigris_year": 2024,
+    "commuting_zones_source": "https://www.ers.usda.gov/media/6968/2020-commuting-zones.csv?v=56155",
+    "commuting_zones_vintage": "2020",
+    "energy_tech_crosswalk_file": "draft_cgt_industry_update_ILLUSTRATIVE.xlsx",
+    "energy_tech_crosswalk_modified": "2026-04-27 13:42:58",
+    "energy_tech_crosswalk_sha256": "eae0f32bf1d1c1eb8e536d3e2a114bd942864d75141ae193d2609bc173f67673",
+    "energy_tech_crosswalk_patches": {
+      "added_attempted": 1,
+      "added_effective": 1,
+      "removed": 0,
+      "warnings": 0
+    }
+  },
+  "geographic_levels": [
+    {
+      "key": "county",
+      "display_name": "County",
+      "supports_industry_space": true,
+      "n": 3143
+    },
+    {
+      "key": "state",
+      "display_name": "State",
+      "supports_industry_space": false,
+      "n": 51
+    },
+    {
+      "key": "cbsa",
+      "display_name": "Core-Based Statistical Area",
+      "supports_industry_space": true,
+      "n": 925
+    },
+    {
+      "key": "csa",
+      "display_name": "Combined Statistical Area",
+      "supports_industry_space": true,
+      "n": 181
+    },
+    {
+      "key": "cz",
+      "display_name": "Commuting Zone",
+      "supports_industry_space": true,
+      "n": 588
+    }
+  ],
+  "default_geographic_level": "cz",
+  "metrics": [
+    {
+      "key": "economic_complexity",
+      "display_name": "Economic Complexity Score",
+      "submetrics": ["raw", "percentile"]
+    },
+    {
+      "key": "industry_feasibility",
+      "display_name": "Industry Feasibility",
+      "submetrics": ["raw", "percentile"]
+    },
+    {
+      "key": "existing_concentration",
+      "display_name": "Existing Industry Concentration",
+      "submetrics": ["location_quotient", "presence", "comparative_advantage"]
+    }
+  ],
+  "industry_aggregations": [
+    {
+      "key": "naics6",
+      "display_name": "Six-Digit Industry Code"
+    },
+    {
+      "key": "energy_tech",
+      "display_name": "Energy Technology"
+    }
+  ],
+  "energy_tech_summary": {
+    "n_mappings": 473,
+    "n_pairs": 53,
+    "n_industries_tagged": 171
+  },
+  "palette": {
+    "sequential_5": ["#ffffd9", "#c7e9b4", "#7fcdbb", "#41b6c4", "#1d91c0"],
+    "sequential_7": ["#ffffd9", "#edf8b1", "#c7e9b4", "#7fcdbb", "#41b6c4", "#1d91c0", "#225ea8"],
+    "scatter_tiers": {
+      "not_present": "#edf8b1",
+      "nascent_presence": "#7fcdbb",
+      "specialized": "#2c7fb8"
+    }
+  },
+  "branding": {
+    "primary_blue": "#0E314C",
+    "accent_teal": "#3FB6BC",
+    "typography": "Source Sans Pro"
+  },
+  "github": {
+    "owner": "bsf-rmi",
+    "repo": "RMI_Clean_Growth_Tool",
+    "pages_url": "https://bsf-rmi.github.io/RMI_Clean_Growth_Tool/",
+    "issues_url": "https://github.com/bsf-rmi/RMI_Clean_Growth_Tool/issues/new"
+  }
+}
