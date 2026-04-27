@@ -1506,8 +1506,10 @@ async function renderLocatorMap(el, level, geoid) {
 // Track last-rendered county map for auto-zoom
 let _lastCountyMap = null;
 
-async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, parentGeoMap) {
+async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, parentGeoMap, isCurrent) {
+  const stale = () => isCurrent && !isCurrent();
   const geojson = await fetchGeoJSON();
+  if (stale()) return;
 
   // Build per-county value + hover text maps, and track parent region IDs
   const valMap = new Map();   // fips -> numeric value
@@ -1553,6 +1555,7 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
   // (initial paint, hidden tab); wait one frame so the flexbox parent settles.
   if (!plotEl.clientWidth) {
     await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+    if (stale()) return;
   }
   const width = Math.max(plotEl.clientWidth || 960, 320);
   const legendGap = width >= 600 ? 160 : 0;
@@ -1560,6 +1563,8 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
   const mapH = Math.round(mapW * 0.62);
   const height = mapH;
 
+  // If the host has been detached by a newer render in the meantime, bail.
+  if (!plotEl.isConnected) return;
   // Clear previous content
   plotEl.innerHTML = '';
 
@@ -1674,6 +1679,7 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
   // Draw state boundaries on top
   try {
     const statesTopo = await fetchStatesTopo();
+    if (stale() || !plotEl.isConnected) return;
     const stateMesh = topojson.mesh(statesTopo, statesTopo.objects.states, (a, b) => a !== b);
     mapG.append('path')
       .attr('class', 'state-boundary')
@@ -1700,6 +1706,7 @@ async function renderCountyMap(plotEl, dataMap, metricKey, metricLabel, level, p
   if (level !== 'county') {
     try {
       const countyTopo = await fetchCountyTopo();
+      if (stale() || !plotEl.isConnected) return;
       const regionMesh = topojson.mesh(
         countyTopo,
         countyTopo.objects.counties,
@@ -1809,13 +1816,22 @@ function zoomToState(stateFips) {
   );
 }
 
+// Monotonic token. Each loadNational() call grabs a fresh token; if a newer
+// call starts before this one's awaits resume, the older call bails before
+// touching the DOM. Defends against hash-route → init double-fire and any
+// other interleavings that could leave a half-rendered map behind.
+let _natRenderToken = 0;
+function _natIsCurrent(t) { return t === _natRenderToken; }
+
 async function loadNational() {
+  const myToken = ++_natRenderToken;
   const level = document.getElementById('nat-level').value;
   const mode = document.getElementById('nat-mode').value;
   showSpinner();
 
   try {
     if (!metaGeo) metaGeo = await fetchCSV('meta/geography_specific.csv');
+    if (!_natIsCurrent(myToken)) return;
     const container = document.getElementById('nat-results');
     container.innerHTML = '';
     container.style.display = '';
@@ -1863,8 +1879,9 @@ async function loadNational() {
           const id = padLen ? String(g.geoid).padStart(padLen, '0') : String(g.geoid);
           dataMap.set(id, g[metricKey]);
         });
-        await renderCountyMap(mapPlotEl, dataMap, metricKey, metricLabel, level, null);
+        await renderCountyMap(mapPlotEl, dataMap, metricKey, metricLabel, level, null, () => _natIsCurrent(myToken));
       }
+      if (!_natIsCurrent(myToken)) return;
 
       // Summary stats
       const vals = geos.map(g => g[metricKey]).filter(v => v != null && !isNaN(v));
@@ -1930,6 +1947,7 @@ async function loadNational() {
       if (!indCode) { container.innerHTML = '<div class="empty-state"><p>Please select an industry first.</p></div>'; hideSpinner(); return; }
 
       let data = await fetchCSVGz('by_industry/' + level + '/' + indCode + '.csv.gz');
+      if (!_natIsCurrent(myToken)) return;
       const metricKey = document.getElementById('nat-metric').value;
       const metricLabel = document.getElementById('nat-metric').selectedOptions[0].text;
       const indDesc = industryTitles.get(indCode) || indCode;
@@ -1987,8 +2005,9 @@ async function loadNational() {
           }));
           await renderStateMap(mapPlotEl, pseudoGeos, metricKey, metricLabel);
         } else {
-          await renderCountyMap(mapPlotEl, dataMap, metricKey, metricLabel, level, geoMap);
+          await renderCountyMap(mapPlotEl, dataMap, metricKey, metricLabel, level, geoMap, () => _natIsCurrent(myToken));
         }
+        if (!_natIsCurrent(myToken)) return;
       }
 
       // Summary stats
@@ -2106,40 +2125,132 @@ function runForceLayout(nodes, edges, levelCode) {
 
   // Seed the PRNG for reproducible layouts
   let seed = 42;
-  function seededRandom() { seed = (seed * 16807 + 0) % 2147483647; return (seed - 1) / 2147483646; }
+  function seededRandom() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
 
-  const nodeMap = new Map();
-  const simNodes = nodes.map((n, i) => {
-    const angle = seededRandom() * 2 * Math.PI;
-    const radius = seededRandom() * 400;
-    const sn = { id: String(n.industry_code), index: i, x: Math.cos(angle) * radius, y: Math.sin(angle) * radius };
-    nodeMap.set(sn.id, sn);
-    return sn;
+  // Build undirected adjacency from edges to find connected components.
+  // A typical force layout that's center-pulled will compress the connected
+  // mass into a tight blob and ring the disconnected nodes around it. We
+  // instead run the simulation per-component (so isolated nodes don't feel
+  // pressure from the dense blob across the canvas) and tile the components.
+  const adj = new Map();
+  edges.forEach(e => {
+    const a = String(e.from), b = String(e.to);
+    if (!adj.has(a)) adj.set(a, []);
+    if (!adj.has(b)) adj.set(b, []);
+    adj.get(a).push(b);
+    adj.get(b).push(a);
   });
 
-  const simLinks = edges.map(e => ({
-    source: nodeMap.get(String(e.from)),
-    target: nodeMap.get(String(e.to)),
-    weight: e.weight
-  })).filter(l => l.source && l.target);
+  const visited = new Set();
+  const components = [];
+  nodes.forEach(n => {
+    const id = String(n.industry_code);
+    if (visited.has(id)) return;
+    const comp = [];
+    const stack = [id];
+    visited.add(id);
+    while (stack.length) {
+      const cur = stack.pop();
+      comp.push(cur);
+      const neigh = adj.get(cur);
+      if (neigh) for (const nb of neigh) {
+        if (!visited.has(nb)) { visited.add(nb); stack.push(nb); }
+      }
+    }
+    components.push(comp);
+  });
 
-  // Run d3-force simulation synchronously
-  const sim = d3.forceSimulation(simNodes)
-    .force('link', d3.forceLink(simLinks).id(d => d.id)
-      .distance(d => 120 * (1 - d.weight) + 10)
-      .strength(d => d.weight * 0.8))
-    .force('charge', d3.forceManyBody().strength(-60).distanceMax(500))
-    .force('center', d3.forceCenter(0, 0))
-    .force('collide', d3.forceCollide(8))
-    .stop();
+  // Helper: run d3-force on one connected subgraph, return positions
+  // centred at (0, 0) with the bbox so the caller can tile.
+  function layoutSubgraph(subNodeIds) {
+    if (subNodeIds.length === 1) {
+      return { positions: new Map([[subNodeIds[0], { x: 0, y: 0 }]]), w: 0, h: 0 };
+    }
+    const idSet = new Set(subNodeIds);
+    const subNodes = subNodeIds.map((id, i) => {
+      const angle = seededRandom() * 2 * Math.PI;
+      const r = 30 + seededRandom() * 30;
+      return { id, index: i, x: Math.cos(angle) * r, y: Math.sin(angle) * r };
+    });
+    const subNodeMap = new Map(subNodes.map(n => [n.id, n]));
+    const subLinks = edges
+      .filter(e => idSet.has(String(e.from)) && idSet.has(String(e.to)))
+      .map(e => ({ source: subNodeMap.get(String(e.from)), target: subNodeMap.get(String(e.to)), weight: e.weight }));
 
-  // Run 300 iterations for better convergence
-  for (let i = 0; i < 300; i++) sim.tick();
+    const sim = d3.forceSimulation(subNodes)
+      .force('link', d3.forceLink(subLinks).id(d => d.id)
+        .distance(d => 120 * (1 - d.weight) + 10)
+        .strength(d => d.weight * 0.8))
+      // Drop the global centre force — it was the main reason the connected
+      // mass collapsed into a tight blob. Charge + collide define equilibrium
+      // on their own. distanceMax shrunk so nodes don't feel each other
+      // across the whole canvas.
+      .force('charge', d3.forceManyBody().strength(-60).distanceMax(150))
+      .force('collide', d3.forceCollide(8))
+      .alphaDecay(0.025)
+      .stop();
 
-  const positions = new Map();
-  simNodes.forEach(sn => positions.set(sn.id, { x: sn.x, y: sn.y }));
-  layoutCache.set(cacheKey, positions);
-  return positions;
+    const ticks = subNodes.length > 100 ? 600 : subNodes.length > 30 ? 400 : 250;
+    for (let i = 0; i < ticks; i++) {
+      sim.tick();
+      if (sim.alpha() < 0.005) break;
+    }
+
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    subNodes.forEach(sn => {
+      if (sn.x < minX) minX = sn.x;
+      if (sn.x > maxX) maxX = sn.x;
+      if (sn.y < minY) minY = sn.y;
+      if (sn.y > maxY) maxY = sn.y;
+    });
+    const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
+    const positions = new Map();
+    subNodes.forEach(sn => positions.set(sn.id, { x: sn.x - cx, y: sn.y - cy }));
+    return { positions, w: maxX - minX, h: maxY - minY };
+  }
+
+  // Sort components: biggest connected blob first, then small components,
+  // then singletons (which get tiled into a grid below).
+  components.sort((a, b) => b.length - a.length);
+  const main = components.length && components[0].length > 1 ? layoutSubgraph(components[0]) : null;
+  const smalls = [];
+  const singletons = [];
+  for (let i = (main ? 1 : 0); i < components.length; i++) {
+    if (components[i].length === 1) singletons.push(components[i][0]);
+    else smalls.push(layoutSubgraph(components[i]));
+  }
+
+  const out = new Map();
+  if (main) main.positions.forEach((p, id) => out.set(id, { x: p.x, y: p.y }));
+
+  // Place small components to the right of the main blob, stacked.
+  const mainW = main ? main.w : 0;
+  const mainH = main ? main.h : 0;
+  let smallX = mainW / 2 + 60;
+  let smallYRow = -mainH / 2;
+  let rowH = 0;
+  smalls.forEach(s => {
+    if (smallYRow + s.h > mainH / 2 && rowH > 0) {
+      smallX += rowH + 40;
+      smallYRow = -mainH / 2;
+      rowH = 0;
+    }
+    s.positions.forEach((p, id) => out.set(id, { x: p.x + smallX + s.w / 2, y: p.y + smallYRow + s.h / 2 }));
+    smallYRow += s.h + 30;
+    if (s.w > rowH) rowH = s.w;
+  });
+
+  // Place singletons in a tidy grid below the main blob.
+  const isoYStart = mainH / 2 + 50;
+  const cols = Math.max(1, Math.ceil(Math.sqrt(singletons.length)));
+  const isoSpacing = 22;
+  singletons.forEach((id, i) => {
+    const r = Math.floor(i / cols), c = i % cols;
+    out.set(id, { x: (c - cols / 2) * isoSpacing, y: isoYStart + r * isoSpacing });
+  });
+
+  layoutCache.set(cacheKey, out);
+  return out;
 }
 
 async function loadIndustrySpace() {
