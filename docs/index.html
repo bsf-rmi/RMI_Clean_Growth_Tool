@@ -1,49 +1,57 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>RMI Clean Growth Tool</title>
-<meta name="description" content="Regional industrial complexity and energy technology readiness across the United States." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/styles.css" />
+<link rel="stylesheet" href="styles.css?v=pipeline_20260427_185134">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
 </head>
 <body>
-<header class="site-header" role="banner">
-  <a class="brand" href="#/" aria-label="Home">
-    <img class="brand-logo" src="assets/logo.svg" alt="RMI" />
-    <span class="brand-text">Clean Growth Tool</span>
-  </a>
-  <nav class="site-nav" role="navigation" aria-label="Primary">
+<header class="site-header">
+  <div class="brand">
+    <div class="brand-mark">RMI</div>
+    <div class="brand-text">
+      <div class="brand-title">Clean Growth Tool</div>
+      <div class="brand-sub">Economic complexity for the energy transition</div>
+    </div>
+  </div>
+  <nav class="site-nav">
     <a href="#/" data-route="home">Home</a>
-    <a href="#/national" data-route="national">National view</a>
-    <a href="#/regional" data-route="regional">Regional view</a>
+    <a href="#/national" data-route="national">National</a>
+    <a href="#/regional" data-route="regional">Regional</a>
     <a href="#/about" data-route="about">About</a>
   </nav>
 </header>
-<main id="app" class="app-main" role="main"></main>
-<div id="loading-indicator" class="loading-indicator" hidden>
-  <div class="loading-spinner" aria-hidden="true"></div>
-  <div class="loading-text">Loading data...</div>
-</div>
-<div id="tooltip" class="tooltip" role="tooltip" hidden></div>
+<main id="app" class="app">
+  <div id="boot-screen" class="boot-screen">
+    <div class="boot-card">
+      <div class="boot-spinner"></div>
+      <div class="boot-text">
+        <div class="boot-title">Loading Clean Growth Tool</div>
+        <div class="boot-detail" id="boot-detail">Fetching bootstrap bundle...</div>
+      </div>
+    </div>
+  </div>
+  <div id="view" hidden></div>
+</main>
 <footer class="site-footer">
-  <div class="footer-row">
-    <span id="footer-pipeline">Pipeline: ...</span>
-    <span class="footer-sep">|</span>
-    <span>Lightcast 2024 employment data</span>
-    <span class="footer-sep">|</span>
-    <a href="#/about">Methodology</a>
-    <span class="footer-sep">|</span>
-    <a id="footer-issues" href="#" target="_blank" rel="noopener">Report an issue</a>
+  <div class="footer-left">
+    <span class="footer-pid">Build <code id="footer-pipeline-id">pipeline_20260427_185134</code></span>
+    <span class="footer-time" id="footer-build-time">2026-04-27T18:51:34-0400</span>
+  </div>
+  <div class="footer-right">
+    <a href="https://github.com/bsf-rmi/RMI_Clean_Growth_Tool" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://github.com/bsf-rmi/RMI_Clean_Growth_Tool/issues/new" target="_blank" rel="noopener">Report an issue</a>
   </div>
 </footer>
-<script src="https://cdn.jsdelivr.net/npm/d3@7.8.5/dist/d3.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-<script src="assets/dashboard.js"></script>
+<div id="tooltip" class="tooltip" hidden></div>
+<script src="app.js?v=pipeline_20260427_185134"></script>
 </body>
 </html>
 
