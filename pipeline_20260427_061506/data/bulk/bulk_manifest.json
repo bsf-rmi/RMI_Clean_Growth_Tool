@@ -1,0 +1,54 @@
+{
+  "county_fact": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_061506/pipeline_20260427_061506/data/bulk/county_fact.parquet",
+    "size_mb": 72.85
+  },
+  "state_fact": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_061506/pipeline_20260427_061506/data/bulk/state_fact.parquet",
+    "size_mb": 1.81
+  },
+  "cbsa_fact": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_061506/pipeline_20260427_061506/data/bulk/cbsa_fact.parquet",
+    "size_mb": 23.09
+  },
+  "csa_fact": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_061506/pipeline_20260427_061506/data/bulk/csa_fact.parquet",
+    "size_mb": 5.72
+  },
+  "cz_fact": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_061506/pipeline_20260427_061506/data/bulk/cz_fact.parquet",
+    "size_mb": 15.47
+  },
+  "county_peers": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_061506/pipeline_20260427_061506/data/bulk/county_peers.parquet",
+    "size_mb": 0.26
+  },
+  "cbsa_peers": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_061506/pipeline_20260427_061506/data/bulk/cbsa_peers.parquet",
+    "size_mb": 0.11
+  },
+  "csa_peers": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_061506/pipeline_20260427_061506/data/bulk/csa_peers.parquet",
+    "size_mb": 0.03
+  },
+  "cz_peers": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_061506/pipeline_20260427_061506/data/bulk/cz_peers.parquet",
+    "size_mb": 0.07
+  },
+  "county_colocation": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_061506/pipeline_20260427_061506/data/bulk/county_colocation.parquet",
+    "size_mb": 4.77
+  },
+  "cbsa_colocation": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_061506/pipeline_20260427_061506/data/bulk/cbsa_colocation.parquet",
+    "size_mb": 4.19
+  },
+  "csa_colocation": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_061506/pipeline_20260427_061506/data/bulk/csa_colocation.parquet",
+    "size_mb": 3.33
+  },
+  "cz_colocation": {
+    "path": "/var/folders/s5/h1m27_rx2md436wfdk51ypgw0000gp/T//Rtmpt8vtAR/rmi_clean_growth_pipeline_20260427_061506/pipeline_20260427_061506/data/bulk/cz_colocation.parquet",
+    "size_mb": 3.95
+  }
+}
